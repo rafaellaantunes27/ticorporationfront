@@ -1,25 +1,10 @@
-# TI Corporation EquipHub · Frontend
+# TI Corporation DQ Studio
 
-Aplicação para inventário de equipamentos e empréstimos. PRD proposto em `docs/PRD.md`, spec de comportamento em `docs/specs/001-gestao-equipamentos/`, decisões em `docs/adr/`.
+Frontend estático e sem build para o validador CSV `dq` (ZIP do curso). Regra de negócio é primária em `ticorporationback/src/dq/core.py`, frontend apenas reflete análise e oferece fallback local demonstrativo.
 
-## Estado atual
-
-Frontend estático com dados fictícios em localStorage, pronto para demonstração. Backend de produção exige banco e chave configurados; não inferir que Supabase já está conectado.
-
-## Comandos verificados
-
-- Testes: `npm test`.
-- Sintaxe: `npm run check`.
-- Local: `python3 -m http.server 3000`.
-
-## Onde olhar
-
-- `rules/restrictions.md`: leia antes de qualquer alteração.
-- `rules/tests.md`: leia antes de escrever ou modificar testes.
-- `docs/adr/README.md`: leia antes de sugerir mudança estrutural.
-- `docs/PRD.md`: proposta de negócio que precisa de validação.
-- `docs/specs/001-gestao-equipamentos/spec.md`: critérios desta versão.
-
-## Processo
-
-Spec vence código em conflito. Não invente decisão ausente: identifique e peça validação. Faça alteração pequena por vez. Teste antes de anunciar conclusão. Não adicione segredos nem invente status de produção.
+- Não altere o conteúdo nem a estrutura do arquivo `vendas.csv` original.
+- `config.js` contém apenas endereço público da API; nunca inclua credenciais.
+- Interfaces operam no navegador com DOM seguro (`textContent` para conteúdo do CSV).
+- Dados recebidos não são armazenados em servidor pelo frontend.
+- Antes de finalizar, `npm test && npm run check`, e valide acessibilidade em desktop/mobile.
+- Leia `docs/spec.md` antes de modificar a UI ou métricas.

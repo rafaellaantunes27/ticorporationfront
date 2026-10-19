@@ -1,2 +1,2 @@
-// URL publica da API (preenchida apos o deploy do backend).
-window.TI_BACKEND_URL = "";
+/* Somente URL pública da API. Nunca inserir tokens ou segredos no frontend. */
+window.TI_DQ_API_URL = 'https://ticorporationback.vercel.app';

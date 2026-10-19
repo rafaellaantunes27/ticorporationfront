@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {parseCSV,analyzeLocal,exportIssuesCSV} from '../local-analyzer.mjs';
+const head='id_venda,data_venda,cliente,produto,categoria,quantidade,preco_unitario,regiao,vendedor';
+const valid='V1,2025-01-01,Ana,Mouse,Eletrônicos,1,99.00,Sul,Bia';
+test('consegue analisar CSV válido',()=>{const r=analyzeLocal(head+'\n'+valid);assert.equal(r.total_problemas,0);assert.equal(r.qualidade,100)});
+test('preserva vírgulas dentro de aspas',()=>{const r=parseCSV(head+'\n'+valid.replace('99.00','"R$ 1.000,00"'));assert.equal(r.linhas[0].valores.preco_unitario,'R$ 1.000,00')});
+test('detecta dados faltantes',()=>{const r=analyzeLocal(head+'\n'+valid.replace(',Ana,',',,'));assert.equal(r.problemas[0].tipo,'ausente')});
+test('detecta ID duplicado',()=>{const r=analyzeLocal(head+'\n'+valid+'\n'+valid);assert(r.problemas.some(p=>p.tipo==='id_duplicado'))});
+test('detecta quantidade textual e categoria inconsistente',()=>{const r=analyzeLocal(head+'\n'+valid.replace(',1,99.00,',',dois,99.00,').replace('Eletrônicos','eletronicos'));assert(r.problemas.some(p=>p.tipo==='tipo_invalido'));assert(r.problemas.some(p=>p.tipo==='categoria_inconsistente'))});
+test('falha quando falta uma coluna',()=>assert.throws(()=>analyzeLocal('x,y\n1,2'),/Colunas obrigatórias/));
+test('exportação neutraliza fórmula de CSV',()=>{const s=exportIssuesCSV([{linha:2,coluna:'cliente',tipo:'ausente',severidade:'erro',mensagem:'x',valor:'=HYPERLINK("bad")'}]);assert(s.includes("'=HYPERLINK"))});

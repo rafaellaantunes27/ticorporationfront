@@ -1,20 +1,29 @@
-# TI Corporation EquipHub · Frontend
+# TI Corporation DQ Studio — Frontend
 
-Interface administrativa responsiva para gestão de equipamentos e empréstimos. HTML/CSS/JavaScript modular, sem dependências de build, deploy estático na Vercel.
+Dashboard responsivo de qualidade de dados baseado no projeto **dq** do ZIP `dq-projeto-alunos`. Usa **o arquivo original** `vendas.csv` para demonstração. A análise é executada pela API Python de `ticorporationback` e pode utilizar um fallback local (offline) para que a interface continue demonstrável quando a API estiver indisponível.
 
-## Como executar
+## Como rodar
 
 ```bash
-python3 -m http.server 3000
-# abra http://localhost:3000
+python -m http.server 3000
+# visite http://localhost:3000
 npm test
 npm run check
 ```
 
-O modo demonstração inclui dados **fictícios** e salva alterações no localStorage deste navegador. É possível criar ativos, pessoas e empréstimos, devolver equipamentos, filtrar, consultar indicadores e exportar CSV.
+## Funcionalidades
 
-Para usar o backend persistente, aplique a migration do repositório `ticorporationback`, configure as variáveis seguras na Vercel do backend e informe no menu **Configurações** a URL da API e a chave administrativa durante a sessão. Também é possível preencher `window.TI_BACKEND_URL` em `config.js` para apresentar a URL de produção por padrão (sem chave).
+- Abrir o CSV original das aulas; upload e drag & drop de CSV próprio (até 2 MB).
+- Nota de qualidade por **linhas sem erros**; alertas não reduzem a nota.
+- Ausentes, duplicatas, ID duplicado, tipos e datas inconsistentes, categorias e preços atípicos (avisos).
+- Filtros por tipo/severidade, busca no dataset, tabela paginada.
+- Exportar ocorrências CSV e relatório JSON.
+- Nenhum upload fica armazenado, nenhum dado é transmitido além da API pública configurada.
 
-**Segurança:** o navegador nunca contém `SUPABASE_SERVICE_ROLE_KEY`. A chave administrativa usada pelo operador é mantida somente na sessão; ela não é adequada como autenticação de larga escala. Para produção corporativa, substitua por SSO, autenticação por usuário, autorização por função e auditoria formal.
+## API
 
-Arquivos de governança: `docs/PRD.md`, `docs/specs/001-gestao-equipamentos/`, `docs/adr/`, `rules/` e `AGENTS.md`. Veja `docs/premissas.md` para o que foi inferido.
+`config.js` define `window.TI_DQ_API_URL`; URL pública não é segredo. A API é Python FastAPI, baseada no pacote original `dq` (`pip install -e .` e `dq data/vendas.csv`). Em produção, inspecione as respostas e **não use dados sigilosos** sem controle de acesso e privacidade adequados.
+
+## Proveniência
+
+O CSV demonstrativo `vendas.csv` é byte a byte igual ao arquivo `data/vendas.csv` enviado pelo usuário. A aplicação de gerenciamento de equipamentos anterior foi substituída porque não correspondia a esse material.
