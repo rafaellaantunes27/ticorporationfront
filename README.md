@@ -1,29 +1,34 @@
-# TI Corporation DQ Studio — Frontend
+# TI Corporation — Tela de login azul e Data Quality Studio
 
-Dashboard responsivo de qualidade de dados baseado no projeto **dq** do ZIP `dq-projeto-alunos`. Usa **o arquivo original** `vendas.csv` para demonstração. A análise é executada pela API Python de `ticorporationback` e pode utilizar um fallback local (offline) para que a interface continue demonstrável quando a API estiver indisponível.
+Este repositório contém o **frontend responsivo** do projeto TI Corporation. A primeira tela agora é um **login em tons de azul**; ao entrar na demonstração você acessa o painel de análise de qualidade de dados. A base de negócio continua sendo o projeto **`dq`** enviado no ZIP: backend Python em `ticorporationback`, comando `dq data/vendas.csv` e arquivo `vendas.csv` original intacto.
 
-## Como rodar
+## Acessar a demonstração
+
+Visite https://ticorporationfront.vercel.app e clique em **Usar conta demonstrativa**, que preenche as credenciais públicas:
+
+- **E-mail:** `demo@ticorporation.com.br`
+- **Senha:** `Demo@2026`
+
+Depois clique em **Entrar no workspace**. É possível mostrar a senha, navegar pelo painel e fazer logout pelo botão **Sair**. Marcar “Manter acesso nesta aba” mantém **somente o estado de demonstração** na aba atual e nunca armazena a senha.
+
+> **Importante:** login demonstrativo e visibilidade do painel **não equivalem a autenticação real**. As credenciais estão no frontend de propósito, a API pública não exige sessão. Não enviar CSV com dados sensíveis. Para uso real, configurar identidade no backend e autorização nas rotas antes de disponibilizar acesso a usuários.
+
+## Recursos depois do login
+
+- CSV original do curso (`vendas.csv`, 71 linhas) e análise Python via API FastAPI.
+- Upload ou arrastar CSV de até 2 MB com o mesmo cabeçalho das vendas; fallback JavaScript demonstrativo se a API não responder.
+- Indicadores de qualidade, 35 ocorrências na amostra, filtros por tipo e severidade, exploração de registros e exportação CSV/JSON.
+- Layout responsivo, navegação mobile, login com mensagens de erro e sessão demo.
+
+## Executar localmente
 
 ```bash
-python -m http.server 3000
-# visite http://localhost:3000
+python3 -m http.server 3000
+# abra http://localhost:3000
 npm test
 npm run check
 ```
 
-## Funcionalidades
+`config.js` define apenas a URL pública do backend. Não inserir tokens nem segredos no frontend.
 
-- Abrir o CSV original das aulas; upload e drag & drop de CSV próprio (até 2 MB).
-- Nota de qualidade por **linhas sem erros**; alertas não reduzem a nota.
-- Ausentes, duplicatas, ID duplicado, tipos e datas inconsistentes, categorias e preços atípicos (avisos).
-- Filtros por tipo/severidade, busca no dataset, tabela paginada.
-- Exportar ocorrências CSV e relatório JSON.
-- Nenhum upload fica armazenado, nenhum dado é transmitido além da API pública configurada.
-
-## API
-
-`config.js` define `window.TI_DQ_API_URL`; URL pública não é segredo. A API é Python FastAPI, baseada no pacote original `dq` (`pip install -e .` e `dq data/vendas.csv`). Em produção, inspecione as respostas e **não use dados sigilosos** sem controle de acesso e privacidade adequados.
-
-## Proveniência
-
-O CSV demonstrativo `vendas.csv` é byte a byte igual ao arquivo `data/vendas.csv` enviado pelo usuário. A aplicação de gerenciamento de equipamentos anterior foi substituída porque não correspondia a esse material.
+Arquivos de referência: `docs/spec.md`, `AGENTS.md` e `tests/`.

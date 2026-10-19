@@ -1,10 +1,11 @@
-# TI Corporation DQ Studio
+# TI Corporation DQ Studio · Interface azul
 
-Frontend estático e sem build para o validador CSV `dq` (ZIP do curso). Regra de negócio é primária em `ticorporationback/src/dq/core.py`, frontend apenas reflete análise e oferece fallback local demonstrativo.
+O frontend estático do validador CSV `dq` inicia em **uma tela de login azul**, e não diretamente no dashboard. A entrada é **demo local**, pois o backend atual não possui serviço de autenticação; nunca a apresente como proteção real nem carregue credenciais secretas em arquivos estáticos.
 
-- Não altere o conteúdo nem a estrutura do arquivo `vendas.csv` original.
-- `config.js` contém apenas endereço público da API; nunca inclua credenciais.
-- Interfaces operam no navegador com DOM seguro (`textContent` para conteúdo do CSV).
-- Dados recebidos não são armazenados em servidor pelo frontend.
-- Antes de finalizar, `npm test && npm run check`, e valide acessibilidade em desktop/mobile.
-- Leia `docs/spec.md` antes de modificar a UI ou métricas.
+- Leia `docs/spec.md` antes de mudar a UI.
+- Não altere `vendas.csv` original.
+- `auth.mjs` valida somente a conta pública de demonstração; `auth-ui.js` manipula a UI e a sessão demonstrativa.
+- `app.js` só inicializa o painel após o usuário entrar na demonstração.
+- Frontend não deve conter segredos nem credenciais reais; `config.js` contém apenas URL pública.
+- CSV em DOM sempre via `textContent`, nunca `innerHTML` sem escape.
+- Execute `npm test && npm run check`, teste viewport mobile/desktop, botões e saída antes do deploy.
