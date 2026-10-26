@@ -3,5 +3,9 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "scripts": {"test": "node --test", "check": "node --check app.js && node --check local-analyzer.mjs && node --check auth.mjs && node --check auth-ui.js"}
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check app.js && node --check local-analyzer.mjs && node --check auth.mjs && node --check auth-ui.js",
+    "check:ca": "node scripts/check-ca.mjs"
+  }
 }

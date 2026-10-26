@@ -32,3 +32,21 @@ npm run check
 `config.js` define apenas a URL pública do backend. Não inserir tokens nem segredos no frontend.
 
 Arquivos de referência: `docs/spec.md`, `AGENTS.md` e `tests/`.
+
+## Aula 11 — subagente verificador independente
+
+A verificação de aceite do SDD usa **`agents/verificador-spec.md`** nos dois repositórios. O verificador lê a spec, procura o teste de cada CA e devolve tabela + checks + veredito. **Ele não edita nem corrige código.** Em arquitetura REST são duas verificações e uma tabela consolidada; `OUTRO REPOSITÓRIO` não encerra a validação.
+
+- `AGENTS.md` orienta o agente principal e mostra onde ficam os papéis.
+- `rules/spec-flow.md` exige a delegação antes do `PRONTA`.
+- `rules/restrictions.md` impede modificações, banco de produção, credenciais e publicação pelo verificador.
+- `rules/tests.md` define CAs e rastreabilidade; `rules/checks.md` lista comandos seguros.
+- `.claude/agents/`, `.cursor/agents/` e `.codex/agents/` são adaptadores gerados. Fonte única: `agents/verificador-spec.md`.
+
+```bash
+python scripts/sync_agent_adapters.py --check
+```
+
+Se sua ferramenta não oferecer subagentes, abra uma **sessão nova limpa** com `Aja conforme agents/verificador-spec.md`; forneça o caminho da spec e o escopo dos commits. **Não há delegação automática garantida apenas pela presença do arquivo**. A integração foi preparada; a aprovação final exige execução do verificador no harness e decisão humana.
+
+**Contrato compartilhado:** `docs/specs/002-integracao-dq/spec.md` e `docs/verification/roteiro-aula11.md` orientam a verificação front + back.
