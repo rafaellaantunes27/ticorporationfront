@@ -1,0 +1,104 @@
+/*
+ * Dashboard responsivo — correção de layout de 26/10/2026.
+ * As áreas de análise DEVEM permanecer dentro de #dashboardView.
+ * A rolagem horizontal pertence à tabela, nunca ao documento inteiro.
+ */
+.app {
+  width: 100%;
+  min-width: 0;
+  overflow-x: clip;
+}
+.app .main,
+.app .content,
+.app .view-panel,
+.app .analytics-grid,
+.app .panel,
+.app .kpi {
+  min-width: 0;
+}
+.app .main { flex: 1 1 0%; }
+.app .content { width: 100%; }
+.app .sidebar { overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; }
+.app .intro-banner { min-width: 0; }
+.app .intro-banner > div:first-child { min-width: 0; }
+.app .topbar { width: 100%; }
+.app .topbar-end { flex-shrink: 0; }
+.app .env-badge { white-space: nowrap; }
+.app .breadcrumbs { min-width: 0; }
+.app .breadcrumbs strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.app .page-head-row > div:first-child { min-width: 0; }
+.app .page-head h1 { overflow-wrap: anywhere; }
+.app .filename-badge { max-width: 55%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.app .kpi { overflow-wrap: anywhere; }
+.app .kpi-top { gap: 10px; }
+.app .kpi-icon { flex-shrink: 0; }
+.app .analytics-grid { align-items: stretch; }
+.app .bar-row { grid-template-columns: minmax(0, 1.3fr) minmax(75px, 2.2fr) 25px; }
+.app .donut-wrap { flex-wrap: wrap; justify-content: center; }
+.app .donut-legend { flex: 1 1 80px; }
+.app .recent-panel { overflow: hidden; }
+.app .table-scroll { max-width: 100%; overscroll-behavior-x: contain; }
+.app .table-scroll table { width: 100%; min-width: 660px; }
+.app .reports-layout { min-width: 0; }
+.app .report-stat strong { overflow-wrap: anywhere; text-align: right; }
+.app .topbar .logout-button { white-space: nowrap; }
+
+/* Desktop intermediário: não sacrificar os cartões para caber tudo em uma linha. */
+@media (min-width: 1021px) and (max-width: 1280px) {
+  .app .topbar { padding-inline: 25px; }
+  .app .topbar-end { gap: 12px; }
+  .app .date-label { display: none; }
+  .app .top-sep { display: none; }
+  .app .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .app .analytics-grid { grid-template-columns: minmax(0, 1fr); }
+  .app .analytics-grid .panel { min-height: 0; }
+}
+@media (max-width: 1020px) {
+  .app .topbar { padding-inline: 22px; }
+  .app .topbar-end { gap: 10px; }
+  .app .date-label, .app .top-sep { display: none; }
+  .app .analytics-grid { grid-template-columns: minmax(0, 1fr); }
+  .app .reports-layout { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 700px) {
+  .app .sidebar { z-index: 60; }
+  .app .main { width: 100%; flex-basis: 100%; }
+  .app .topbar { padding-inline: 15px; gap: 9px; }
+  .app .topbar-end { gap: 8px; }
+  .app .top-avatar { display: none; }
+  .app .breadcrumbs > span { display: none; }
+  .app .breadcrumbs strong { max-width: 128px; }
+  .app .page-head-row { gap: 10px; }
+  .app .page-head-row > .btn-primary { min-width: 42px; flex: 0 0 42px; }
+  .app .intro-banner { padding: 25px; }
+  .app .intro-banner .illustration { display: none; }
+  .app .intro-banner > div:first-child { max-width: 100%; }
+  .app .banner-actions { flex-wrap: wrap; }
+  .app .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .app .section-heading { align-items: start; }
+  .app .filename-badge { max-width: 48%; }
+  .app .panel-head { flex-wrap: wrap; }
+  .app .upload-heading { align-items: start; }
+  .app .upload-heading > span { display: none; }
+  .app .pagination { flex-wrap: wrap; justify-content: center; }
+}
+@media (max-width: 480px) {
+  .app .topbar .env-badge { display: none; }
+  .app .content { padding: 22px 15px; }
+  .app .eyebrow { letter-spacing: 1.4px; }
+  .app .page-head h1 { font-size: clamp(23px, 7vw, 28px); line-height: 1.18; }
+  .app .intro-banner h2 { font-size: 23px; }
+  .app .kpi { padding: 15px 13px; min-height: 145px; }
+  .app .kpi-top { font-size: 10px; }
+  .app .kpi-value strong { font-size: 25px; }
+  .app .kpi-foot { font-size: 10px; }
+  .app .analytics-grid .panel { padding: 18px 15px; }
+  .app .bar-row { gap: 8px; font-size: 10px; }
+  .app .donut-wrap { justify-content: space-around; }
+  .app .recent-panel .panel-head { padding-inline: 15px; }
+  .app .section-heading { flex-wrap: wrap; }
+  .app .filename-badge { max-width: 100%; }
+}
+@media (max-width: 350px) {
+  .app .kpis { grid-template-columns: minmax(0, 1fr); }
+}

@@ -20,6 +20,10 @@ Depois clique em **Entrar no workspace**. É possível mostrar a senha, navegar 
 - Indicadores de qualidade, 35 ocorrências na amostra, filtros por tipo e severidade, exploração de registros e exportação CSV/JSON.
 - Layout responsivo, navegação mobile, login com mensagens de erro e sessão demo.
 
+## Dashboard responsivo (26/10/2026)
+
+A estrutura HTML do painel foi corrigida para manter indicadores, gráficos e tabelas **dentro da área principal**, e a folha `dashboard.css` impede que tabelas produzam scroll horizontal no documento. Foram incluídos testes `CA-DASH-01/02` para detectar regressão da estrutura e dos breakpoints. Consulte `docs/correcao-dashboard-2026-10-26.md`.
+
 ## Executar localmente
 
 ```bash
