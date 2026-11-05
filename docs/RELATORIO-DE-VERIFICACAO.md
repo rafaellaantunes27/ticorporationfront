@@ -54,3 +54,5 @@ A entrega está organizada com a estrutura, documentos e agentes do material for
 - Comandos smoke sem dependências: frontend 2/2 e backend 6/6 passaram.
 - `npm install` completo não foi possível por indisponibilidade de registry; builds e testes Jest ainda **não verificados**.
 - Nenhum resultado HTTP 200 de integração real com Supabase foi demonstrado nesta etapa.
+
+- Em prévia, a Vercel retornou `FUNCTION_INVOCATION_FAILED` porque exigia export padrão de função HTTP. O entrypoint NestJS foi adaptado com `export default handler(req, res)` e instância cacheada. **Pendente novo teste HTTP após publicar a correção.**
