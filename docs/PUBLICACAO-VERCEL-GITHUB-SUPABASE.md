@@ -14,7 +14,7 @@ Os projetos `ticorporationfront` e `ticorporationback` existentes no GitHub/Verc
 
 ## Vercel
 - Frontend: framework `vite`, diretório de código `frontend` no monorepo ou `.` se o repositório contiver apenas o front; build `npm run build`; saída `dist`; Node 22.
-- Backend: framework `nestjs`, diretório `backend` ou `.`, build `npm run build`; entrypoint Vercel `src/main.ts`; Node 22.
+- Backend: framework `nestjs`, diretório `backend` ou `.`, build `npm run build`; entrypoint Vercel `src/main.ts` com export default de handler HTTP; Node 22.
 - `VITE_API_URL`: URL pública do backend.
 - `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY`: valores **publicáveis** da aplicação Supabase.
 - `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY`: os mesmos valores públicos usados pelo backend apenas para validar tokens.
