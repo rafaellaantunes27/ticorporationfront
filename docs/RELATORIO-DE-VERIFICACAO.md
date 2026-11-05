@@ -49,7 +49,7 @@ A entrega está organizada com a estrutura, documentos e agentes do material for
 
 - Mantida a spec 001: qualquer conta autenticada tem acesso a Operações. Controle de papéis mais restrito exige nova decisão do responsável e não foi imposto.
 - Schema Prisma corrigido com `@db.Uuid` para IDs e chaves estrangeiras, conforme `UUID` do SQL.
-- Entrada NestJS `backend/src/app.ts` adicionada para detecção pela Vercel.
+- Entrada NestJS `backend/src/main.ts` corrigida para inicializar quando importada pela Vercel.
 - SQL Supabase de instalação inicial consolidado com RLS restritiva. **Não foi aplicado** sem projeto Supabase/organização autorizados.
 - Comandos smoke sem dependências: frontend 2/2 e backend 6/6 passaram.
 - `npm install` completo não foi possível por indisponibilidade de registry; builds e testes Jest ainda **não verificados**.
