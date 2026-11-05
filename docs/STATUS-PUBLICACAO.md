@@ -22,6 +22,6 @@
 
 ## Evidências
 - 8 testes smoke locais passaram (2 frontend + 6 backend).
-- GitHub Actions executou npm install, testes smoke, TypeScript e build com sucesso em branches de entrega; revisão adicionou Jest ao workflow, cujo estado está documentado nos links de Actions correspondentes.
+- GitHub Actions executou npm install, testes smoke, TypeScript e build com sucesso em branches de entrega; Jest foi executado nos dois workflows e ambos concluíram com sucesso: frontend https://github.com/rafaellaantunes27/ticorporationfront/actions/runs/42027814251 ; backend https://github.com/rafaellaantunes27/ticorporationback/actions/runs/42027820144 .
 - Testes com Supabase Auth real e banco permanecem pendentes.
 - Não foi usado acesso administrativo, chave service_role ou credencial privada no frontend.
