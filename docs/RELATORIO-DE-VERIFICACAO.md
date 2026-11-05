@@ -58,3 +58,12 @@ A entrega está organizada com a estrutura, documentos e agentes do material for
 - Em prévia, a Vercel retornou `FUNCTION_INVOCATION_FAILED` porque exigia export padrão de função HTTP. O entrypoint NestJS foi adaptado com `export default handler(req, res)` e instância cacheada. **Pendente novo teste HTTP após publicar a correção.**
 
 - Nova validação Vercel: `GET /health` na prévia backend retorna HTTP **503** com `database:not_configured` (comportamento esperado), **sem** `FUNCTION_INVOCATION_FAILED`. A compilação front retorna página HTML 200. As variáveis de ligação foram configuradas em Preview.
+
+### Retificação com evidência remota posterior (05/11/2026)
+
+Os apontamentos de `npm install`/Jest/build não executados acima descrevem **somente a preparação local**. Posteriormente, os dois repositórios passaram em GitHub Actions com `npm install`, `npm run test:smoke`, `npm test` (Jest), `npm run typecheck` e `npm run build`:
+
+- Frontend: https://github.com/rafaellaantunes27/ticorporationfront/actions/runs/42027814251 — sucesso.
+- Backend: https://github.com/rafaellaantunes27/ticorporationback/actions/runs/42027820144 — sucesso.
+
+Na Vercel, após substituir o bootstrap pelo handler HTTP padrão, o backend não retornou mais erro 500: `GET /health` respondeu HTTP 503 com `database: not_configured`. Essa resposta é **esperada até configurar a conexão PostgreSQL**. O frontend respondeu HTTP 200 com HTML e asset JavaScript 200. A API e login **não estão integrados com banco real**; não marcar teste ponta a ponta como aprovado.
