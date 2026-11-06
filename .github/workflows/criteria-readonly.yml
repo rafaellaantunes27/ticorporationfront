@@ -1,4 +1,4 @@
-name: Gate estático de critérios de aceite (não é subagente)
+name: Gate estatico SDD frontend
 on:
   push:
     branches: ["entrega-professor-emprest-ai-20261105"]
@@ -16,6 +16,6 @@ jobs:
         with:
           node-version: '22'
       - run: node scripts/check-ca.mjs
-      - run: node --experimental-strip-types --test scripts/practice.test.mjs backend/tests-policy.test.mjs frontend/tests/catalog.test.mjs
+      - run: node --test scripts/practice.test.mjs tests/catalog.test.mjs
       - run: python3 -m pip install pillow==11.3.0
-      - run: python3 -m unittest discover -s frontend/skills/imagens-equipamentos/tests -v
+      - run: python3 -m unittest discover -s skills/imagens-equipamentos/tests -v

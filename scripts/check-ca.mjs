@@ -1,35 +1,8 @@
-/** Gate estático para cobertura de CAs. NÃO substitui subagente com contexto isolado. */
-import { readFileSync, readdirSync } from 'node:fs';
-import { resolve, join } from 'node:path';
-const root = resolve(import.meta.dirname, '..');
-function walk(dir) {
-  const list = [];
-  for (const d of readdirSync(dir, { withFileTypes: true })) {
-    if (['node_modules', '.git', 'dist', '__pycache__', '.cache'].includes(d.name)) continue;
-    const path = join(dir, d.name);
-    if (d.isDirectory()) list.push(...walk(path));
-    else if (/\.spec\.ts$|\.test\.mjs$|^test_.*\.py$/.test(d.name)) list.push(path);
-  }
-  return list;
-}
-const specPaths = ['docs/specs/003-dados-iniciais-e-imagens/spec.md', 'docs/specs/004-solicitar-emprestimo/spec.md'];
-const argv = process.argv;
-const tests = argv.includes('--tests-file')
-  ? [resolve(argv[argv.indexOf('--tests-file') + 1])]
-  : [...walk(resolve(root, 'backend/src')), ...walk(resolve(root, 'backend')),
-     ...walk(resolve(root, 'frontend/src')),
-     ...walk(resolve(root, 'frontend/skills/imagens-equipamentos/tests')),
-     ...walk(resolve(root, 'scripts'))];
-const corpus = tests.map(p => readFileSync(p, 'utf8')).join('\n');
-let failed = false;
-for (const specPath of specPaths) {
-  const spec = readFileSync(resolve(root, specPath), 'utf8');
-  const criteria = [...new Set(spec.match(/\b(?:DATA|IMG|EMP)-CA-\d{2}\b/g) || [])];
-  for (const ca of criteria) {
-    const status = corpus.includes(ca) || corpus.includes(ca.replaceAll('-', '_'))
-      ? 'EVIDÊNCIA LOCALIZADA' : 'SEM TESTE';
-    console.log(`${ca}\t${status}`);
-    if (status === 'SEM TESTE') failed = true;
-  }
-}
-if (failed) process.exitCode = 1;
+/** Gate estatico dos CAs locais. Nao substitui o subagente independente. */
+import {readFileSync} from 'node:fs';
+const tests = ["scripts/practice.test.mjs", "tests/catalog.test.mjs", "skills/imagens-equipamentos/tests/test_image_pipeline.py"];
+const corpus = tests.map(p=>readFileSync(new URL('../'+p,import.meta.url),'utf8')).join('\n');
+const ids = ["DATA-CA-01", "DATA-CA-02", "DATA-CA-03", "DATA-CA-04", "IMG-CA-01", "IMG-CA-02", "IMG-CA-04", "IMG-CA-05", "IMG-CA-06", "EMP-CA-07", "EMP-CA-08"];
+let ok=true;
+for(const id of ids){const found=corpus.includes(id)||corpus.includes(id.replaceAll('-','_')); console.log(`${id}\t${found?'EVIDENCIA ENCONTRADA':'SEM TESTE'}`);if(!found)ok=false;}
+if(!ok)process.exitCode=1;

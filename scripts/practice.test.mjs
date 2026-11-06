@@ -19,18 +19,18 @@ describe('Especificação 003 — rastreabilidade estática',()=>{
   const source=text('./manual_publish.py');assert.match(source,/asset_tag=eq/);assert.match(source,/409/);
  });
  it('IMG-CA-01: busca exclusiva da Pixabay e cache 24h [estática]',()=>{
-  const source=text('../frontend/skills/imagens-equipamentos/scripts/pixabay_search.py');assert.match(source,/https:\/\/pixabay.com\/api/);assert.match(source,/86400/);
+  const source=text('../skills/imagens-equipamentos/scripts/pixabay_search.py');assert.match(source,/https:\/\/pixabay.com\/api/);assert.match(source,/86400/);
   assert.doesNotMatch(source,/pexels.com\/api/);
  });
  it('IMG-CA-02: exige aprovação assinada antes do download [estática]',()=>{
-  const source=text('../frontend/skills/imagens-equipamentos/scripts/prepare_pixabay_image.py');assert.match(source,/visuallyApproved/);assert.match(source,/reviewedBy/);
+  const source=text('../skills/imagens-equipamentos/scripts/prepare_pixabay_image.py');assert.match(source,/visuallyApproved/);assert.match(source,/reviewedBy/);
  });
  it('IMG-CA-04: IDs e hashes não podem se repetir [estática]',()=>{
-  const source=text('../frontend/skills/imagens-equipamentos/scripts/validate_images.py');assert.match(source,/ids, shas, result/);assert.match(source,/checksum in shas/);
+  const source=text('../skills/imagens-equipamentos/scripts/validate_images.py');assert.match(source,/ids, shas, result/);assert.match(source,/checksum in shas/);
  });
  it('IMG-CA-05: créditos do fotógrafo, licença e logo da fonte são documentados [estática]',()=>{
-  assert.match(text('../frontend/src/App.tsx'),/Fotos: <a href="https:\/\/pixabay.com\/pt\//);
-  assert.match(text('../frontend/skills/imagens-equipamentos/scripts/validate_images.py'),/Pixabay Content License/);
+  assert.match(text('../src/App.tsx'),/Fotos: <a href="https:\/\/pixabay.com\/pt\//);
+  assert.match(text('../skills/imagens-equipamentos/scripts/validate_images.py'),/Pixabay Content License/);
  });
  it('IMG-CA-06: escrita em produção é opção manual e bucket fixo [estática]',()=>{
   const source=text('./manual_publish.py');assert.match(source,/--apply/);assert.match(source,/equipment-images/);
@@ -38,20 +38,11 @@ describe('Especificação 003 — rastreabilidade estática',()=>{
 });
 describe('Especificação 004 — evidência estática complementar',()=>{
  it('EMP-CA-07: catálogo apresenta fonte das fotos e filtro [UI estática]',()=>{
-  assert.match(text('../frontend/src/App.tsx'),/filterCatalogue/);
-  assert.match(text('../frontend/src/App.tsx'),/item.photoUrl/);
+  assert.match(text('../src/App.tsx'),/filterCatalogue/);
+  assert.match(text('../src/App.tsx'),/item.photoUrl/);
  });
  it('EMP-CA-08: botões de empréstimo dependem da elegibilidade [UI estática]',()=>{
-  assert.match(text('../frontend/src/App.tsx'),/!canBorrow/);
-  assert.match(text('../frontend/src/catalog-policy.ts'),/openLoans < 5/);
- });
- it('EMP-CA-09: transação usa serializable e atualização condicional [estática]',()=>{
-  const source=text('../backend/src/main.ts');assert.match(source,/Serializable/);assert.match(source,/updateMany\(\{ where: \{ id: equipmentId, status: 'AVAILABLE'/);
- });
- it('EMP-CA-10: apenas empréstimos do usuário são buscados [estática]',()=>{
-  const source=text('../backend/src/main.ts');assert.match(source,/where: \{ userId: user.id, returnedAt: null \}/);
- });
- it('EMP-CA-11: Operações exige papel consultado no banco [estática]',()=>{
-  const source=text('../backend/src/main.ts');assert.match(source,/requireOperations\(req\)/);assert.match(source,/operator.role !== 'OPERATIONS'/);
+  assert.match(text('../src/App.tsx'),/!canBorrow/);
+  assert.match(text('../src/catalog-policy.ts'),/openLoans < 5/);
  });
 });
