@@ -32,3 +32,4 @@ Para concluir com segurança, o responsável pelo projeto deve:
 7. Testar login, visualização de catálogo, empréstimo, limite de 3 itens, prazo de 14 dias e devolução no ambiente isolado; registrar as evidências de ponta a ponta antes de promover a produção.
 
 **Importante:** esta etapa mantém a antiga produção Data Quality intacta; o EMPREST.AI permanece na branch de entrega/Preview até a validação.
+Publicação da prática Pixabay iniciada em 06/11/2026.
