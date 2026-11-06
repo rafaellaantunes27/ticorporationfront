@@ -1,0 +1,148 @@
+# Checks locais EMPREST.AI — 2026-11-06
+
+IMPORTANTE: testes locais e verificações estáticas. Não são evidência de produção.
+
+$ node --experimental-strip-types --test backend/tests-policy.test.mjs frontend/tests/catalog.test.mjs scripts/practice.test.mjs
+22 testes Node: PASSOU, código 0
+e pula objeto existente [estática]
+      ---
+      duration_ms: 0.158959
+      type: 'test'
+      ...
+    # Subtest: IMG-CA-01: busca exclusiva da Pixabay e cache 24h [estática]
+    ok 5 - IMG-CA-01: busca exclusiva da Pixabay e cache 24h [estática]
+      ---
+      duration_ms: 0.315846
+      type: 'test'
+      ...
+    # Subtest: IMG-CA-02: exige aprovação assinada antes do download [estática]
+    ok 6 - IMG-CA-02: exige aprovação assinada antes do download [estática]
+      ---
+      duration_ms: 0.147022
+      type: 'test'
+      ...
+    # Subtest: IMG-CA-04: IDs e hashes não podem se repetir [estática]
+    ok 7 - IMG-CA-04: IDs e hashes não podem se repetir [estática]
+      ---
+      duration_ms: 0.176846
+      type: 'test'
+      ...
+    # Subtest: IMG-CA-05: créditos do fotógrafo, licença e logo da fonte são documentados [estática]
+    ok 8 - IMG-CA-05: créditos do fotógrafo, licença e logo da fonte são documentados [estática]
+      ---
+      duration_ms: 0.674787
+      type: 'test'
+      ...
+    # Subtest: IMG-CA-06: escrita em produção é opção manual e bucket fixo [estática]
+    ok 9 - IMG-CA-06: escrita em produção é opção manual e bucket fixo [estática]
+      ---
+      duration_ms: 0.251649
+      type: 'test'
+      ...
+    1..9
+ok 3 - Especificação 003 — rastreabilidade estática
+  ---
+  duration_ms: 4.736441
+  type: 'suite'
+  ...
+# Subtest: Especificação 004 — evidência estática complementar
+    # Subtest: EMP-CA-07: catálogo apresenta fonte das fotos e filtro [UI estática]
+    ok 1 - EMP-CA-07: catálogo apresenta fonte das fotos e filtro [UI estática]
+      ---
+      duration_ms: 1.188692
+      type: 'test'
+      ...
+    # Subtest: EMP-CA-08: botões de empréstimo dependem da elegibilidade [UI estática]
+    ok 2 - EMP-CA-08: botões de empréstimo dependem da elegibilidade [UI estática]
+      ---
+      duration_ms: 0.193452
+      type: 'test'
+      ...
+    # Subtest: EMP-CA-09: transação usa serializable e atualização condicional [estática]
+    ok 3 - EMP-CA-09: transação usa serializable e atualização condicional [estática]
+      ---
+      duration_ms: 0.130347
+      type: 'test'
+      ...
+    # Subtest: EMP-CA-10: apenas empréstimos do usuário são buscados [estática]
+    ok 4 - EMP-CA-10: apenas empréstimos do usuário são buscados [estática]
+      ---
+      duration_ms: 0.200883
+      type: 'test'
+      ...
+    # Subtest: EMP-CA-11: Operações exige papel consultado no banco [estática]
+    ok 5 - EMP-CA-11: Operações exige papel consultado no banco [estática]
+      ---
+      duration_ms: 0.14608
+      type: 'test'
+      ...
+    1..5
+ok 4 - Especificação 004 — evidência estática complementar
+  ---
+  duration_ms: 2.08261
+  type: 'suite'
+  ...
+1..4
+# tests 22
+# suites 4
+# pass 22
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 130.379149
+
+
+$ python -m unittest discover -s frontend/skills/imagens-equipamentos/tests -v
+5 testes Python: PASSOU, código 0
+test_IMG_CA_02_no_review_is_not_approved (test_image_pipeline.ImageTests.test_IMG_CA_02_no_review_is_not_approved) ... ok
+test_IMG_CA_03_800x600_JPEG (test_image_pipeline.ImageTests.test_IMG_CA_03_800x600_JPEG) ... ok
+test_IMG_CA_03_small_image_rejected (test_image_pipeline.ImageTests.test_IMG_CA_03_small_image_rejected) ... ok
+test_IMG_CA_04_repeated_file_hash_rejected (test_image_pipeline.ImageTests.test_IMG_CA_04_repeated_file_hash_rejected) ... ok
+test_IMG_CA_04_repeated_photo_id_rejected (test_image_pipeline.ImageTests.test_IMG_CA_04_repeated_photo_id_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.246s
+
+OK
+
+
+$ node scripts/check-ca.mjs
+21 CAs com teste identificado: PASSOU, código 0
+DATA-CA-01	EVIDÊNCIA LOCALIZADA
+DATA-CA-02	EVIDÊNCIA LOCALIZADA
+DATA-CA-03	EVIDÊNCIA LOCALIZADA
+DATA-CA-04	EVIDÊNCIA LOCALIZADA
+IMG-CA-01	EVIDÊNCIA LOCALIZADA
+IMG-CA-02	EVIDÊNCIA LOCALIZADA
+IMG-CA-03	EVIDÊNCIA LOCALIZADA
+IMG-CA-04	EVIDÊNCIA LOCALIZADA
+IMG-CA-05	EVIDÊNCIA LOCALIZADA
+IMG-CA-06	EVIDÊNCIA LOCALIZADA
+EMP-CA-01	EVIDÊNCIA LOCALIZADA
+EMP-CA-02	EVIDÊNCIA LOCALIZADA
+EMP-CA-03	EVIDÊNCIA LOCALIZADA
+EMP-CA-04	EVIDÊNCIA LOCALIZADA
+EMP-CA-05	EVIDÊNCIA LOCALIZADA
+EMP-CA-06	EVIDÊNCIA LOCALIZADA
+EMP-CA-07	EVIDÊNCIA LOCALIZADA
+EMP-CA-08	EVIDÊNCIA LOCALIZADA
+EMP-CA-09	EVIDÊNCIA LOCALIZADA
+EMP-CA-10	EVIDÊNCIA LOCALIZADA
+EMP-CA-11	EVIDÊNCIA LOCALIZADA
+
+
+$ python scripts/manual_publish.py
+execução dry-run sem rede: PASSOU, código 0
+Plano: 12 patrimônios, 3 em manutenção, fotos Pixabay individuais, conta docente sem empréstimos.
+DRY RUN: zero conexão externa e zero escrita. Próximo passo: validar as imagens e executar manualmente --apply.
+
+
+$ node -e <transpilacao TypeScript sintatica>
+Verificação sintática: PASSOU
+Arquivos TypeScript/TSX transpilados sem dependências: 9 erros sintáticos: 0
+
+
+Controle negativo checker: código 1 (esperado 1, critérios SEM TESTE)
+Casos detectados: 21
+

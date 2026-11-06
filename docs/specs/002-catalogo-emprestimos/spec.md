@@ -1,4 +1,6 @@
-# Spec 002 — Catálogo e empréstimos internos
+# Spec 002 — Catálogo e empréstimos internos (histórico)
+
+> Para os critérios vigentes da prática, usar `docs/specs/004-solicitar-emprestimo/spec.md` e `003-dados-iniciais-e-imagens/spec.md`. Esta spec permanece como registro da etapa anterior.
 
 ## Base
 `docs/PRD.md` e `layout.md`. Complementa a spec 001 (login e conexões), sem alterar seu escopo original.

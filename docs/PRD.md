@@ -1,5 +1,5 @@
 # PRD — Empréstimo de Equipamentos Internos
-Versão 1 · escrito pelo time de Operações
+Versão 2 · regras vigentes da prática de catálogo, imagens e empréstimo
 
 ## Problema
 O controle de quem pegou qual equipamento (notebooks, monitores,
@@ -14,14 +14,14 @@ registrada se alguém lembrar de atualizar a linha.
 
 ## O que precisa existir na primeira versão
 1. Login. Cada pessoa vê os próprios empréstimos.
-2. Catálogo de equipamentos com a situação de cada um.
+2. Catálogo de 12 equipamentos padronizados com foto, situação e patrimônio, com imagens licenciadas via Pixabay.
 3. Solicitar empréstimo de um item disponível.
 4. Devolver um item que está comigo.
-5. Tela de Operações com todos os empréstimos em aberto.
+5. Tela de Operações com todos os empréstimos em aberto, acessível somente ao perfil autorizado.
 
 ## Regras que Operações já decidiu
-- Cada pessoa pode estar com no máximo 3 itens ao mesmo tempo.
-- O prazo padrão de devolução é de 14 dias.
+- Cada pessoa pode estar com no máximo 5 itens ao mesmo tempo.
+- O prazo padrão de devolução é de 14 dias úteis (segunda a sexta; feriados especiais não considerados nesta versão).
 - Quem tem item em atraso não pode pegar outro emprestado.
 - Equipamento em manutenção não aparece como disponível.
 

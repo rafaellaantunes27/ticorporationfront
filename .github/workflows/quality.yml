@@ -1,12 +1,29 @@
-name: Qualidade frontend
+name: Validacao EMPREST.AI (monorepo)
 on: [push, pull_request]
 jobs:
-  test-and-build:
+  frontend:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: {node-version: '22', cache: 'npm'}
+        with: {node-version: '22'}
+      - run: npm install --no-audit --no-fund
+      - run: npm run test:smoke
+      - run: npm test
+      - run: npm run typecheck
+      - run: npm run build
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
       - run: npm install --no-audit --no-fund
       - run: npm run test:smoke
       - run: npm test

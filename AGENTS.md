@@ -10,6 +10,7 @@ O frontend deste repositório é o pacote React/Vite em `frontend/` (não Next.j
 
 ## Skills
 
-- Use [`skills/visual-assets/SKILL.md`](skills/visual-assets/SKILL.md) ao criar ou integrar ilustrações e outros recursos gráficos na interface.
+- Use [`skills/visual-assets/SKILL.md`](skills/visual-assets/SKILL.md) apenas para ilustrações que não sejam equipamentos.
+- Fotos de equipamentos são exclusivas de [`skills/imagens-equipamentos/SKILL.md`](skills/imagens-equipamentos/SKILL.md) e da API Pixabay. Nunca colocar `PIXABAY_API_KEY` no frontend.
 
 Skills e regras locais deste pacote tratam apenas do frontend. Não configure MCP aqui sem uma integração frontend concreta que o utilize.

@@ -76,7 +76,7 @@ Esses artefatos não devem ser misturados. Um critério declara o resultado; o p
 - Mudança de layout deve permanecer coerente com `layout.md` ou ser confirmada antes da implementação.
 
 ## Antes de declarar uma spec pronta
-- Delegue ao subagente verificador-spec (agents/verificador-spec.md),
+- Execute o pré-gate `node scripts/check-ca.mjs` (presença de testes) e delegue a uma instância isolada de `verificador-spec` (`agents/verificador-spec.md`),
   passando o caminho da spec e o intervalo de commits.
 - A spec só é pronta com "Veredito: PRONTA". Qualquer outro resultado
   volta para as tarefas — quem corrige é o agente principal, nunca o

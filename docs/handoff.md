@@ -31,3 +31,26 @@ Pacote de entrega produzido localmente. Aplicação NÃO PRONTA para produção 
 
 ## Próximo passo
 Na máquina com internet, executar npm install + npm test + npm run build nos dois pacotes; testar Supabase isolado e acionar verificador-spec com a spec 001 e 002.
+
+---
+
+## Atualização 06/11/2026 — prática SDD/Pixabay
+
+### Pedido
+Adaptar o EMPREST.AI existente à prática de subagentes, skill de imagens, equipamentos iniciais e empréstimos, com Pixabay. Os requisitos vigentes foram unificados no PRD e specs atuais sem exibir uma seção de divergência do PRD.
+
+### Implementação
+- Novas specs 003/004 com CAs rastreáveis e decisões.
+- Skill Pixabay (API, cache 24h, revisão humana, JPG RGB 800×600, validação de IDs/SHA256) e pipeline manual de publicação.
+- 12 equipamentos em JSON canônico; três marcados em manutenção conforme lista da prática.
+- Prazo de 14 dias úteis, máximo de cinco itens, bloqueio por atraso/manutenção. Concorrrência protegida na API por transação Serializable/atualização condicional.
+- Fotos do bucket Supabase, créditos, autorização servidor para Operações, pessoa colaboradora não recebe nomes de outros mutuários.
+- Gate estático por ID e subagente independente configurado para uso no IDE; a instância real do subagente não foi executada nesta sessão.
+
+### Validação
+- 22 testes Node e 5 testes de imagem passaram. 21 CAs com testes identificados, muitos com evidência somente estática; teste negativo do gate detectou SEM TESTE. Sintaxe TypeScript/TSX passou em 9 arquivos, sem validação completa de tipos/build Vite/Nest nesta sessão.
+- Nenhuma API Pixabay com chave conectada; 12 fotos reais ainda não selecionadas/aprovadas.
+- Nenhuma migration, seed, Auth docente ou Storage de produção alterado; operação atribuída ao humano.
+
+### Estado
+Parcial: código/testes/documentação preparados; pendências detalhadas em ENTREGA.md e docs/OPERACAO-PRODUCAO.md. Não declarar specs PRONTAS antes de validação integrada, fotos reais, parecer independente e publicação humana.

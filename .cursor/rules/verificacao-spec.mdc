@@ -1,0 +1,5 @@
+---
+description: Gate obrigatório de verificação independente antes de qualquer spec PRONTA
+alwaysApply: true
+---
+Após finalizar tarefas, acione `verificador-spec` em contexto isolado com caminho de spec e escopo. Leia `agents/verificador-spec.md`. Nunca delegar correções ao próprio verificador. CI `scripts/check-ca.mjs` é somente pré-gate estático; produção exige parecer real e validação pelo responsável.

@@ -1,0 +1,21 @@
+name: Gate estático de critérios de aceite (não é subagente)
+on:
+  push:
+    branches: ["entrega-professor-emprest-ai-20261105"]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  criteria:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node scripts/check-ca.mjs
+      - run: node --experimental-strip-types --test scripts/practice.test.mjs backend/tests-policy.test.mjs frontend/tests/catalog.test.mjs
+      - run: python3 -m pip install pillow==11.3.0
+      - run: python3 -m unittest discover -s frontend/skills/imagens-equipamentos/tests -v

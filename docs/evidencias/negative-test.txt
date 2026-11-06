@@ -1,0 +1,26 @@
+CONTROLE NEGATIVO: corpus temporário sem critérios, sem commit e sem alteração de código versionado.
+Comando: node scripts/check-ca.mjs --tests-file <arquivo temporário>
+Exit status=1; esperado=1.
+DATA-CA-01	SEM TESTE
+DATA-CA-02	SEM TESTE
+DATA-CA-03	SEM TESTE
+DATA-CA-04	SEM TESTE
+IMG-CA-01	SEM TESTE
+IMG-CA-02	SEM TESTE
+IMG-CA-03	SEM TESTE
+IMG-CA-04	SEM TESTE
+IMG-CA-05	SEM TESTE
+IMG-CA-06	SEM TESTE
+EMP-CA-01	SEM TESTE
+EMP-CA-02	SEM TESTE
+EMP-CA-03	SEM TESTE
+EMP-CA-04	SEM TESTE
+EMP-CA-05	SEM TESTE
+EMP-CA-06	SEM TESTE
+EMP-CA-07	SEM TESTE
+EMP-CA-08	SEM TESTE
+EMP-CA-09	SEM TESTE
+EMP-CA-10	SEM TESTE
+EMP-CA-11	SEM TESTE
+
+Execução real de subagente e dois commits: ainda pendentes.

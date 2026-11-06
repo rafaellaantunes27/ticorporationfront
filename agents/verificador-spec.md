@@ -48,3 +48,13 @@ Se algum arquivo obrigatório não existir, não presuma seu conteúdo: registre
 `Fora de escopo: <lista> | nada encontrado`
 
 `Veredito: PRONTA | NÃO PRONTA — <motivo em uma frase>`
+
+
+## Gate obrigatório para as specs 003 e 004
+- Verificar cada critério `DATA-CA-*`, `IMG-CA-*` e `EMP-CA-*` separadamente. Resultado comparável por `CA`, localização do teste, evidência funcional e `ATENDIDO / SEM TESTE / REPROVADO / AMBÍGUO`.
+- Só usar ferramentas de leitura e testes locais explicitamente auditados; sem permissões de escrita, criação de credenciais, rede de produção, SQL, Storage, push, migration ou deploy.
+- Não alterar teste quando falhar, mesmo que solicitarem. O principal corrige e aciona **nova instância** com contexto limpo.
+- Teste puramente estático merece observação `EVIDÊNCIA ESTÁTICA`, não deve autorizar veredito PRONTA sem integração ou revisão humana necessária.
+- `scripts/check-ca.mjs` é um pré-gate mecânico: pode reprovar um CA por ausência de teste, mas nunca é o parecer do subagente.
+- Nome de arquivo de saída de cada rodada: `docs/evidencias/verificador-<spec>-<rodada>.md` gerado pelo humano/harness; nunca afirmar que foi executado se não foi.
+- O relatório final usa a mesma ordem e os mesmos campos em duas rodadas para permitir `diff` e comparação.
