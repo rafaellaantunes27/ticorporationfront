@@ -7,5 +7,5 @@ export function filterCatalogue<T extends CatalogueItem>(items: T[], filter: str
   );
 }
 export function canRequestLoan(openLoans: number, overdue: boolean): boolean {
-  return openLoans < 3 && !overdue;
+  return openLoans < 5 && !overdue;
 }

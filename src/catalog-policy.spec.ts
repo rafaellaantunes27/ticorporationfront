@@ -15,8 +15,8 @@ describe('Catálogo e elegibilidade no frontend', () => {
     expect(filterCatalogue(items, 'all', 'monitor')[0].name).toBe('Monitor Dell');
   });
   test('EMPREST-CA-08: limite e atraso bloqueiam solicitação na interface', () => {
-    expect(canRequestLoan(2, false)).toBe(true);
-    expect(canRequestLoan(3, false)).toBe(false);
+    expect(canRequestLoan(4, false)).toBe(true);
+    expect(canRequestLoan(5, false)).toBe(false);
     expect(canRequestLoan(0, true)).toBe(false);
   });
 });

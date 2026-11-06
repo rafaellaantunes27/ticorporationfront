@@ -26,6 +26,7 @@ export default function App() {
   const [items, setItems] = useState<Equipment[]>([]);
   const [myLoans, setMyLoans] = useState<Loan[]>([]);
   const [openLoans, setOpenLoans] = useState<Loan[]>([]);
+  const [role, setRole] = useState<'COLLABORATOR' | 'OPERATIONS'>('COLLABORATOR');
   const [filter, setFilter] = useState('all');
   const [query, setQuery] = useState('');
   const [opsQuery, setOpsQuery] = useState('');
@@ -59,10 +60,13 @@ export default function App() {
     if (!sessionEmail) return;
     setLoading(true); setError('');
     try {
-      const [equipment, mine, open] = await Promise.all([
-        api<Equipment[]>('/api/equipment'), api<Loan[]>('/api/loans/me'), api<Loan[]>('/api/loans/open'),
+      const [equipment, mine, profile] = await Promise.all([
+        api<Equipment[]>('/api/equipment'), api<Loan[]>('/api/loans/me'),
+        api<{ role: 'COLLABORATOR' | 'OPERATIONS' }>('/api/me'),
       ]);
-      setItems(equipment); setMyLoans(mine); setOpenLoans(open);
+      const isOperations = profile.role === 'OPERATIONS';
+      const open = isOperations ? await api<Loan[]>('/api/loans/open') : [];
+      setRole(profile.role); setItems(equipment); setMyLoans(mine); setOpenLoans(open);
     } catch (err: any) {
       setError(err.message || 'Erro ao carregar os dados reais.');
       setItems([]); setMyLoans([]); setOpenLoans([]);
@@ -83,7 +87,7 @@ export default function App() {
 
   async function logout() {
     await signOut(); setSessionEmail(null); setItems([]); setMyLoans([]); setOpenLoans([]);
-    setError(''); setSuccess(''); setView('catalog');
+    setRole('COLLABORATOR'); setError(''); setSuccess(''); setView('catalog');
   }
 
   async function action(id: string, path: string, message: string, body?: object) {
@@ -124,7 +128,7 @@ export default function App() {
       <section className="login-panel left-panel" aria-labelledby="login-hero-title">
         <div className="brand-row"><div className="brand-mark" aria-hidden="true" /><span className="brand-word">EMPREST<span className="brand-accent">.AI</span></span></div>
         <div className="hero-copy"><h1 id="login-hero-title">Empréstimos de equipamentos, sem planilha.</h1><p>Acompanhe o que está disponível, o que está com você e quando devolver.</p></div>
-        <div className="stats-strip" aria-label="Regras dos empréstimos"><div><strong>3</strong><span>itens por pessoa</span></div><div><strong>14 dias</strong><span>prazo padrão</span></div><div><strong>0</strong><span>linhas para preencher</span></div></div>
+        <div className="stats-strip" aria-label="Regras dos empréstimos"><div><strong>5</strong><span>itens por pessoa</span></div><div><strong>14 úteis</strong><span>dias para devolver</span></div><div><strong>0</strong><span>linhas para preencher</span></div></div>
         <footer>Operações · TI interno</footer>
       </section>
       <section className="login-panel right-panel" aria-labelledby="login-title">
@@ -147,7 +151,7 @@ export default function App() {
     <div className="app-shell">
       <header className="topbar">
         <div className="nav-left"><div className="brand-mark small" aria-hidden="true" /><nav className="tabs" aria-label="Navegação principal">
-          {tabs.map(({ label, view: target }) => <button key={target} type="button" className={`tab ${view === target ? 'active' : ''}`} onClick={() => { setView(target); setSuccess(''); }}>{label}</button>)}
+          {tabs.filter((tab) => role === 'OPERATIONS' || tab.view === 'catalog' || tab.view === 'loans').map(({ label, view: target }) => <button key={target} type="button" className={`tab ${view === target ? 'active' : ''}`} onClick={() => { setView(target); setSuccess(''); }}>{label}</button>)}
         </nav></div>
         <div className="nav-right"><span className="tag tag-outline">Conta autenticada</span><div className="avatar" aria-hidden="true">{sessionEmail.slice(0, 2).toUpperCase()}</div><span className="user-name">{sessionEmail}</span><button className="text-link" onClick={logout}>Sair</button></div>
       </header>
@@ -158,19 +162,25 @@ export default function App() {
         {view === 'catalog' && <section className="page">
           <div className="page-header"><div><h1>Catálogo</h1><p>{availableItems.length} de {items.length} equipamentos disponíveis agora</p></div><input aria-label="Buscar equipamentos" className="search-input" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Buscar equipamento..." /></div>
           {overdueMine && <div className="notice danger">Você tem empréstimo em atraso. Devolva o item antes de solicitar outro.</div>}
-          {!overdueMine && myLoans.length >= 3 && <div className="notice info">Você atingiu seu limite de 3 itens emprestados.</div>}
+          {!overdueMine && myLoans.length >= 5 && <div className="notice info">Você atingiu seu limite de 5 itens emprestados.</div>}
+          <p className="photo-credit">Fotos: <a href="https://pixabay.com/pt/" target="_blank" rel="noopener noreferrer">Pixabay</a></p>
           <div className="chip-row">{[['all','Todos'],['available','Disponíveis'],['borrowed','Emprestados'],['maintenance','Em manutenção'],['overdue','Em atraso']].map(([key,label]) => <button key={key} type="button" className={`chip ${filter===key?'active':''}`} onClick={() => setFilter(key)}>{label}</button>)}</div>
           <div className="catalog-grid">{filteredItems.map((item) => <article className="card product-card" key={item.id}>
             <div className="card-topline"><span className="card-kicker">{item.category}</span><span className={`pill ${statusColor[item.status]}`}>{statusLabel[item.status]}</span></div>
+            <div className="equipment-photo">
+              {item.photoUrl ? <img src={item.photoUrl} alt={`Foto de ${item.name}`} loading="lazy" width={800} height={600}/> : <div className="photo-empty" aria-label="Foto pendente de publicação">Foto em preparação</div>}
+              {item.photoUrl && item.photoSourceUrl && <a className="photo-by" href={item.photoSourceUrl} target="_blank" rel="noopener noreferrer">Foto: {item.photoAuthor || 'Pixabay'}</a>}
+            </div>
             <h3>{item.name}</h3><small>{item.asset || 'Sem patrimônio informado'}</small>
             <div className="card-detail">{item.status === 'available' ? 'Pronto para retirada no balcão' : item.owner ? `Com ${item.owner} · até ${dateBR(item.dueDate)}` : item.note || 'Indisponível'}</div>
             <button type="button" className="btn btn-primary btn-block" disabled={item.status !== 'available' || !canBorrow || busyId !== null} onClick={() => action(item.id, '/api/loans', `${item.name} solicitado.`, { equipmentId: item.id })}>{busyId === item.id ? 'Solicitando...' : item.status === 'available' ? 'Solicitar empréstimo' : 'Indisponível'}</button>
           </article>)}
           {!loading && filteredItems.length === 0 && <div className="empty-state">Nenhum equipamento corresponde à busca.</div>}</div>
+          
         </section>}
         {view === 'loans' && <section className="page">
-          <div className="page-header"><div><h1>Meus empréstimos</h1><p>{myLoans.length} de 3 itens em seu nome · prazo padrão de 14 dias</p></div></div>
-          <div className="loan-meter" aria-label={`${myLoans.length} de 3 empréstimos ativos`}>{[0,1,2].map((n) => <span key={n} className={n < myLoans.length ? overdueMine ? 'danger' : 'filled' : ''}/>)}</div>
+          <div className="page-header"><div><h1>Meus empréstimos</h1><p>{myLoans.length} de 5 itens em seu nome · prazo de 14 dias úteis</p></div></div>
+          <div className="loan-meter" aria-label={`${myLoans.length} de 5 empréstimos ativos`}>{[0,1,2,3,4].map((n) => <span key={n} className={n < myLoans.length ? overdueMine ? 'danger' : 'filled' : ''}/>)}</div>
           <div className="loan-list">{myLoans.map((loan) => <article key={loan.id} className={`loan-row ${loan.status === 'overdue' ? 'overdue-row' : ''}`}>
             <div><div className="loan-name">{loan.name}</div><small className="loan-meta">{loan.asset || 'Sem patrimônio'}</small></div>
             <div><small className="loan-meta">Retirada</small><div>{dateBR(loan.borrowedAt)}</div></div>
@@ -179,9 +189,9 @@ export default function App() {
             <button type="button" className="btn btn-secondary" disabled={busyId !== null} onClick={() => action(loan.id, `/api/loans/${loan.id}/return`, 'Devolução registrada.')}>{busyId===loan.id?'Registrando...':'Devolver'}</button>
           </article>)}
           {!loading && myLoans.length === 0 && <div className="empty-state"><p>Nenhum empréstimo em seu nome.</p><button className="btn btn-primary" onClick={() => setView('catalog')}>Ir ao catálogo</button></div>}</div>
-          <div className="rules-list"><div>Seus itens ficam disponíveis após devolução.</div><div>Você pode manter até 3 itens ativos.</div><div>Em atraso, novos empréstimos ficam bloqueados.</div></div>
+          <div className="rules-list"><div>Seus itens ficam disponíveis após devolução.</div><div>Você pode manter até 5 itens ativos.</div><div>Em atraso, novos empréstimos ficam bloqueados.</div></div>
         </section>}
-        {view === 'operations' && <section className="page">
+        {role === 'OPERATIONS' && view === 'operations' && <section className="page">
           <div className="page-header"><div><h1>Operações · empréstimos em aberto</h1><p>Itens com responsável e prazo de devolução</p></div><div className="toolbar-right"><input className="search-input small" aria-label="Buscar empréstimos" placeholder="Buscar pessoa ou equipamento..." value={opsQuery} onChange={(e)=>setOpsQuery(e.target.value)}/><button className="btn btn-primary" onClick={() => setView('equipment')}>Cadastrar equipamento</button></div></div>
           <div className="kpis-row"><div className="kpi-card"><span>Em aberto</span><strong>{openLoans.length}</strong><small>itens em andamento</small></div><div className="kpi-card danger"><span>Em atraso</span><strong>{overdueItems.length}</strong><small>precisam de atenção</small></div><div className="kpi-card success"><span>Disponíveis</span><strong>{availableItems.length}</strong><small>prontos para retirar</small></div><div className="kpi-card muted"><span>Manutenção</span><strong>{maintenanceItems.length}</strong><small>fora de uso</small></div></div>
           <div className="table-wrap"><table><thead><tr><th>Pessoa</th><th>Equipamento</th><th>Patrimônio</th><th>Retirada</th><th>Prazo</th><th>Situação</th><th className="right">Ação</th></tr></thead><tbody>
@@ -189,7 +199,7 @@ export default function App() {
             {!loading && searchedLoans.length===0 && <tr><td colSpan={7} className="empty-cell">Nenhum empréstimo em aberto para esta busca.</td></tr>}
           </tbody></table></div>
         </section>}
-        {view === 'equipment' && <section className="page form-layout">
+        {role === 'OPERATIONS' && view === 'equipment' && <section className="page form-layout">
           <form className="form-card" onSubmit={register}><h2>Cadastrar equipamento</h2>
             <div className="form-grid"><label className="full-width"><span>Nome</span><input required minLength={3} value={form.name} onChange={(e)=>setForm({...form,name:e.target.value})} placeholder={'Ex.: Monitor Dell 24"'}/></label>
               <label><span>Categoria</span><select value={form.category} onChange={(e)=>setForm({...form,category:e.target.value})}><option>Notebook</option><option>Monitor</option><option>Cabo</option><option>Câmera</option><option>Acessório</option></select></label>
@@ -198,7 +208,7 @@ export default function App() {
               <fieldset className="radio-group full-width"><legend className="label-title">Situação inicial</legend><label><input type="radio" name="status" value="AVAILABLE" checked={form.status==='AVAILABLE'} onChange={(e)=>setForm({...form,status:e.target.value})}/> Disponível</label><label><input type="radio" name="status" value="MAINTENANCE" checked={form.status==='MAINTENANCE'} onChange={(e)=>setForm({...form,status:e.target.value})}/> Em manutenção</label></fieldset>
             </div><div className="form-actions"><button type="submit" className="btn btn-primary" disabled={busyId!==null}>{busyId==='register'?'Cadastrando...':'Cadastrar equipamento'}</button><button type="button" className="btn btn-ghost" onClick={()=>setView('operations')}>Cancelar</button></div>
           </form>
-          <aside className="side-panels"><div className="panel"><h3>Regras em vigor</h3><ul><li>Limite de 3 itens por pessoa</li><li>Prazo padrão de 14 dias</li><li>Atrasos bloqueiam empréstimos</li><li>Em manutenção não aparece como disponível</li></ul></div><div className="panel muted-panel"><h3>Fora desta versão</h3><ul><li>Reserva futura</li><li>Notificação por e-mail</li><li>Importação da planilha</li></ul></div></aside>
+          <aside className="side-panels"><div className="panel"><h3>Regras em vigor</h3><ul><li>Limite de 5 itens por pessoa</li><li>Prazo padrão de 14 dias úteis</li><li>Atrasos bloqueiam empréstimos</li><li>Em manutenção não aparece como disponível</li></ul></div><div className="panel muted-panel"><h3>Fora desta versão</h3><ul><li>Reserva futura</li><li>Notificação por e-mail</li><li>Importação da planilha</li></ul></div></aside>
         </section>}
       </main>
     </div>

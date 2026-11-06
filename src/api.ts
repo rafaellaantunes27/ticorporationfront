@@ -7,6 +7,10 @@ export type Equipment = {
   asset: string | null;
   status: 'available' | 'borrowed' | 'maintenance' | 'overdue';
   note: string;
+  photoUrl: string | null;
+  photoSourceUrl: string | null;
+  photoAuthor: string | null;
+  photoLicense: string | null;
   owner: string | null;
   dueDate: string | null;
 };
