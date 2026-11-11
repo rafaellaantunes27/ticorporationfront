@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
-import { authIsConfigured, getSession, signIn, signOut } from './auth';
+import { authIsConfigured, getSession, recoverSessionFromRedirect, requestPasswordRecovery, signIn, signOut, updateOwnPassword } from './auth';
 import { api, type Equipment, type Loan } from './api';
 import { filterCatalogue, canRequestLoan } from './catalog-policy';
 
@@ -21,6 +21,8 @@ export default function App() {
   const [health, setHealth] = useState('Verificando API...');
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
+  const [needsPasswordSetup, setNeedsPasswordSetup] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
   const [loginPending, setLoginPending] = useState(false);
   const [view, setView] = useState<View>('catalog');
   const [items, setItems] = useState<Equipment[]>([]);
@@ -48,11 +50,13 @@ export default function App() {
 
   useEffect(() => {
     let mounted = true;
-    getSession().then((saved) => {
+    recoverSessionFromRedirect().then(async (redirect) => {
+      const saved = redirect?.session || await getSession();
       if (!mounted) return;
+      setNeedsPasswordSetup(Boolean(redirect?.mustSetPassword));
       setSessionEmail(saved?.user?.email || null);
       setBooting(false);
-    }).catch(() => { if (mounted) setBooting(false); });
+    }).catch((err: Error) => { if (mounted) { setError(err.message); setBooting(false); } });
     return () => { mounted = false; };
   }, []);
 
@@ -82,6 +86,26 @@ export default function App() {
       setSessionEmail(saved.user?.email || loginEmail.trim());
       setLoginPassword(''); setView('catalog');
     } catch (err: any) { setError(err.message || 'Não foi possível autenticar.'); }
+    finally { setLoginPending(false); }
+  }
+
+  async function requestRecovery() {
+    setError(''); setSuccess('');
+    if (!loginEmail.trim()) { setError('Informe seu e-mail antes de solicitar o link.'); return; }
+    setLoginPending(true);
+    try {
+      await requestPasswordRecovery(loginEmail);
+      setSuccess('Se a conta estiver cadastrada, você receberá um link para definir a senha.');
+    } catch (err: any) { setError(err.message || 'Não foi possível solicitar o link.'); }
+    finally { setLoginPending(false); }
+  }
+
+  async function saveNewPassword(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault(); setError(''); setLoginPending(true);
+    try {
+      await updateOwnPassword(newPassword);
+      setNewPassword(''); setNeedsPasswordSetup(false); setSuccess('Senha definida com segurança.');
+    } catch (err: any) { setError(err.message || 'Não foi possível definir a senha.'); }
     finally { setLoginPending(false); }
   }
 
@@ -123,6 +147,31 @@ export default function App() {
 
   if (booting) return <main className="center-state" role="status">Verificando sessão...</main>;
 
+  if (needsPasswordSetup && sessionEmail) return (
+    <main className="login-screen">
+      <section className="login-panel left-panel">
+        <div className="brand-row"><div className="brand-mark" aria-hidden="true" /><span className="brand-word">EMPREST<span className="brand-accent">.AI</span></span></div>
+        <div className="hero-copy"><h1>Ativação de conta</h1><p>Defina sua senha para começar a usar o catálogo.</p></div>
+      </section>
+      <section className="login-panel right-panel">
+        <div className="auth-box">
+          <h2>Definir senha</h2><p>{sessionEmail}</p>
+          {error && <div className="notice danger" role="alert">{error}</div>}
+          <form onSubmit={saveNewPassword}>
+            <label htmlFor="new-password">Nova senha
+              <input id="new-password" type="password" autoComplete="new-password" minLength={12} required
+                value={newPassword} onChange={(event) => setNewPassword(event.target.value)} />
+            </label>
+            <button className="btn btn-primary btn-block" type="submit" disabled={loginPending}>
+              {loginPending ? 'Salvando...' : 'Definir senha e continuar'}
+            </button>
+          </form>
+          <small>Use pelo menos 12 caracteres. Não compartilhe senhas no chat ou no GitHub.</small>
+        </div>
+      </section>
+    </main>
+  );
+
   if (!sessionEmail) return (
     <main className="login-screen">
       <section className="login-panel left-panel" aria-labelledby="login-hero-title">
@@ -136,12 +185,14 @@ export default function App() {
           <h2 id="login-title">Entrar</h2><p>Acesse o catálogo e acompanhe seus empréstimos com sua conta corporativa.</p>
           {!authIsConfigured() && <div className="notice danger" role="alert">Ambiente não configurado. Consulte o arquivo frontend/.env.example.</div>}
           {error && <div className="notice danger" role="alert">{error}</div>}
-          <form onSubmit={onLogin}>
+          {success && <div className="notice success" role="status">{success}</div>}
+           <form onSubmit={onLogin}>
             <label htmlFor="login-email">E-mail<input id="login-email" type="email" autoComplete="username" required value={loginEmail} onChange={(event) => setLoginEmail(event.target.value)} /></label>
             <label htmlFor="login-password">Senha<input id="login-password" type="password" autoComplete="current-password" required value={loginPassword} onChange={(event) => setLoginPassword(event.target.value)} /></label>
             <button className="btn btn-primary btn-block" type="submit" disabled={loginPending || !authIsConfigured()}>{loginPending ? 'Autenticando...' : 'Entrar'}</button>
           </form>
-          <small>Contas são cadastradas previamente pela equipe responsável. Não há acesso de demonstração.</small><p className="api-health" aria-live="polite">{health}</p>
+          <button type="button" className="text-link" onClick={requestRecovery} disabled={loginPending}>Ativar convite ou recuperar senha</button>
+           <small>Contas são cadastradas previamente pela equipe responsável. Não há acesso de demonstração.</small><p className="api-health" aria-live="polite">{health}</p>
         </div>
       </section>
     </main>

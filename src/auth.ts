@@ -66,6 +66,51 @@ async function tokenRequest(body: object, grant: 'password' | 'refresh_token'): 
   return storeSession(await response.json());
 }
 
+
+/** Trata tokens do convite ou da recuperação sem mantê-los na URL pública. */
+export async function recoverSessionFromRedirect(): Promise<{session: SupabaseSession; mustSetPassword: boolean} | null> {
+  if (!window.location.hash.startsWith('#')) return null;
+  const params = new URLSearchParams(window.location.hash.slice(1));
+  if (params.has('error')) {
+    window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    throw new Error('Link expirado. Solicite um novo e-mail de acesso.');
+  }
+  const access = params.get('access_token'), refresh = params.get('refresh_token');
+  if (!access || !refresh) return null;
+  window.history.replaceState(null, '', window.location.pathname + window.location.search);
+  const {url,publicKey}=configuration();
+  const response=await fetch(`${url}/auth/v1/user`,{headers:{apikey:publicKey,Authorization:`Bearer ${access}`},signal:AbortSignal.timeout(10000)});
+  if(!response.ok)throw new Error('Não foi possível validar este convite.');
+  const user=await response.json();
+  const session=storeSession({access_token:access,refresh_token:refresh,expires_in:Number(params.get('expires_in')||3600),user});
+  const type=params.get('type');
+  return {session,mustSetPassword:type==='invite'||type==='recovery'};
+}
+
+/** Solicita link de recuperação, sem revelar se um e-mail está cadastrado. */
+export async function requestPasswordRecovery(email:string):Promise<void> {
+  const {url,publicKey}=configuration();
+  const redirectTo=window.location.origin+window.location.pathname;
+  const response=await fetch(`${url}/auth/v1/recover?redirect_to=${encodeURIComponent(redirectTo)}`,{
+    method:'POST',headers:{apikey:publicKey,'Content-Type':'application/json'},
+    body:JSON.stringify({email:email.trim()}),signal:AbortSignal.timeout(10000),
+  });
+  if(!response.ok)throw new Error('Não foi possível solicitar o link de ativação agora.');
+}
+
+/** Define a senha apenas para a identidade de uma sessão verificada. */
+export async function updateOwnPassword(password:string):Promise<void> {
+  if(password.length<12)throw new Error('A senha precisa ter pelo menos 12 caracteres.');
+  const session=await getSession();
+  if(!session)throw new Error('Seu link expirou. Solicite outro.');
+  const {url,publicKey}=configuration();
+  const response=await fetch(`${url}/auth/v1/user`,{
+    method:'PUT',headers:{apikey:publicKey,Authorization:`Bearer ${session.access_token}`,'Content-Type':'application/json'},
+    body:JSON.stringify({password}),signal:AbortSignal.timeout(10000),
+  });
+  if(!response.ok)throw new Error('Não foi possível salvar a senha. Confira as regras de segurança.');
+}
+
 export async function signIn(email: string, password: string): Promise<SupabaseSession> {
   return tokenRequest({ email: email.trim(), password }, 'password');
 }
