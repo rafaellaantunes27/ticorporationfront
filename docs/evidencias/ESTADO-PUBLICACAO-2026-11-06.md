@@ -1,33 +1,28 @@
-# Evidências de publicação — 06/11/2026
+# Estado verificado — EMPREST.AI · 11/11/2026
 
-## Código e CI
+## Ambiente
+- Supabase: `https://supabase.com/dashboard/project/ubqafowwlgodwhrxturg` — projeto `ubqafowwlgodwhrxturg`, região `sa-east-1`.
+- Frontend (Preview): https://ticorporationfront-git-entre-9cb9ca-rafaellaantunes27s-projects.vercel.app — `GET /` **HTTP 200**, título `EMPREST.AI`.
+- Backend (Preview): https://ticorporationback-git-entreg-96222a-rafaellaantunes27s-projects.vercel.app/health — **HTTP 200**, resposta `{"status":"ok","database":"connected"}`.
+- Código-fonte: branches `entrega-professor-emprest-ai-20261105` em `ticorporationfront` e `ticorporationback`. A aplicação Data Quality na `main`/produção não foi substituída.
+- Configuração privada PostgreSQL: `DATABASE_URL` e `DIRECT_URL` estão definidas como **Sensitive** na Vercel Preview; segredos não constam nos arquivos versionados.
 
-- Frontend: `rafaellaantunes27/ticorporationfront`, branch `entrega-professor-emprest-ai-20261105`.
-- Backend: `rafaellaantunes27/ticorporationback`, mesma branch.
-- GitHub Actions: validação da qualidade e gate estático de critérios de aceite concluídos com sucesso nos dois repositórios.
-- Frontend: https://github.com/rafaellaantunes27/ticorporationfront/actions/runs/42249200166 e https://github.com/rafaellaantunes27/ticorporationfront/actions/runs/42249200163
-- Backend: https://github.com/rafaellaantunes27/ticorporationback/actions/runs/42249222768 e https://github.com/rafaellaantunes27/ticorporationback/actions/runs/42249222704
+## Banco e fotos (consulta executada em 11/11/2026)
+- **12** equipamentos em `public.equipment`: **9 AVAILABLE**, **3 MAINTENANCE** (`TI-0004`, `TI-0007`, `TI-0010`).
+- **12/12** linhas com `photo_url`, `photo_id`, `photo_author`, `photo_source_url` e licença.
+- Bucket público `equipment-images`: **12** objetos JPG nomeados `TI-0001.jpg` a `TI-0012.jpg`; todos registrados com MIME `image/jpeg`.
+- As contagens/tamanhos dos objetos foram comparados aos arquivos preparados localmente: **12 JPEGs RGB 800×600**, 12 hashes SHA-256 distintos. Identificações, tamanhos e hashes em `data/published-photos.json`.
+- `public.loans`: **0** registros na consulta.
+- `public.users`: perfil do professor **Marcelo Grilo** (`COLLABORATOR`), sem empréstimos.
+- `auth.users`: existe um usuário para o professor, mas na conferência o e-mail ainda **não estava confirmado**, nenhuma senha estava definida e nenhum login havia ocorrido. A ativação depende da pessoa destinatária do convite. Não se armazena senha no Git.
+- RLS ativa em `users`, `equipment` e `loans`; uma política de leitura em cada tabela.
 
-## Supabase (consulta real)
+## Validação técnica
+- GitHub Actions: jobs de qualidade e gate estático SDD concluídos com sucesso no front e no back (com referências em `ENTREGA.md`).
+- O catálogo renderiza `photoUrl` retornado pela API autenticada e link para `photoSourceUrl`/`photoAuthor`.
+- As políticas de empréstimo (máximo 5, duração de 14 dias úteis, bloqueio por atraso/manutenção) são cobertas por testes automatizados; o fluxo completo com sessão docente e teste de simultaneidade por dois usuários não foi exercido remotamente nesta conferência.
+- Gate estático dos critérios de aceite **não é** uma revisão executada por subagente independente.
+- O Security Advisor do Supabase emitiu aviso de **Leaked Password Protection** desabilitada; verificar a possibilidade de habilitar em Auth → Settings. Referência: https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection .
 
-- Projeto: `ubqafowwlgodwhrxturg`.
-- 12 equipamentos em `public.equipment`.
-- Bucket `equipment-images` criado, **0 objetos publicados**.
-- Perfil `marcelo.grilo@institutojef.org.br` em `public.users`: 1 linha, papel `COLLABORATOR`.
-- Empréstimos associados ao perfil: 0.
-- Usuário correspondente em `auth.users`: 0. Portanto, o login do docente **não** está ativo. Precisa ser criado por Supabase Auth (Dashboard) com senha temporária segura ou convite.
-
-## Pixabay
-
-- 12 candidatas identificadas, com ID único, página original e autor em `data/photo-candidates.json` e `docs/evidencias/PIXABAY-CANDIDATAS.md`.
-- **Candidatas não equivalem a fotos aprovadas/publicadas.** Dependem de revisão visual, download legítimo, redimensionamento JPEG RGB 800×600, validação de hash e upload ao Supabase Storage. API Pixabay requer credencial própria do operador e cache por 24h, sem hotlink permanente.
-
-## Vercel
-
-- Deploy de preview do frontend: READY, GET `/` respondeu HTTP 200 com título `EMPREST.AI`.
-- Deploy de preview do backend: READY, GET `/health` respondeu HTTP 503 `database: not_configured` sem exceção de runtime. Faltam `DATABASE_URL` (pooler 6543) e `DIRECT_URL` (5432) configurados como secrets no ambiente Preview da branch.
-- Produção do antigo Data Quality preservada. Não mover para produção até realizar login real e jornada completa com usuário não docente.
-
-## Conclusão
-
-Prática publicada no GitHub com CI aprovado e previews criadas, mas **funcionamento completo do sistema não verificado**. Falta ativar conexão Prisma, finalizar login Auth e instalar as imagens; não declarar veredito independente do subagente sem executá-lo.
+## Escopo de publicação
+O EMPREST.AI opera em **Preview Vercel**; nenhuma operação substituiu a aplicação preexistente na produção. A documentação separa evidências executadas de testes que requerem sessão autenticada ou revisor independente.

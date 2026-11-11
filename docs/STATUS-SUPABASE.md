@@ -1,34 +1,28 @@
-# Supabase EMPREST.AI — estado verificado em 05/11/2026
+# Estado verificado — EMPREST.AI · 11/11/2026
 
-**Projeto:** `ti-corporation-emprest-ai`  
-**Project ref:** `ubqafowwlgodwhrxturg`  
-**Região:** `sa-east-1` (São Paulo)  
-**Dashboard:** https://supabase.com/dashboard/project/ubqafowwlgodwhrxturg
+## Ambiente
+- Supabase: `https://supabase.com/dashboard/project/ubqafowwlgodwhrxturg` — projeto `ubqafowwlgodwhrxturg`, região `sa-east-1`.
+- Frontend (Preview): https://ticorporationfront-git-entre-9cb9ca-rafaellaantunes27s-projects.vercel.app — `GET /` **HTTP 200**, título `EMPREST.AI`.
+- Backend (Preview): https://ticorporationback-git-entreg-96222a-rafaellaantunes27s-projects.vercel.app/health — **HTTP 200**, resposta `{"status":"ok","database":"connected"}`.
+- Código-fonte: branches `entrega-professor-emprest-ai-20261105` em `ticorporationfront` e `ticorporationback`. A aplicação Data Quality na `main`/produção não foi substituída.
+- Configuração privada PostgreSQL: `DATABASE_URL` e `DIRECT_URL` estão definidas como **Sensitive** na Vercel Preview; segredos não constam nos arquivos versionados.
 
-## Realizado e conferido
+## Banco e fotos (consulta executada em 11/11/2026)
+- **12** equipamentos em `public.equipment`: **9 AVAILABLE**, **3 MAINTENANCE** (`TI-0004`, `TI-0007`, `TI-0010`).
+- **12/12** linhas com `photo_url`, `photo_id`, `photo_author`, `photo_source_url` e licença.
+- Bucket público `equipment-images`: **12** objetos JPG nomeados `TI-0001.jpg` a `TI-0012.jpg`; todos registrados com MIME `image/jpeg`.
+- As contagens/tamanhos dos objetos foram comparados aos arquivos preparados localmente: **12 JPEGs RGB 800×600**, 12 hashes SHA-256 distintos. Identificações, tamanhos e hashes em `data/published-photos.json`.
+- `public.loans`: **0** registros na consulta.
+- `public.users`: perfil do professor **Marcelo Grilo** (`COLLABORATOR`), sem empréstimos.
+- `auth.users`: existe um usuário para o professor, mas na conferência o e-mail ainda **não estava confirmado**, nenhuma senha estava definida e nenhum login havia ocorrido. A ativação depende da pessoa destinatária do convite. Não se armazena senha no Git.
+- RLS ativa em `users`, `equipment` e `loans`; uma política de leitura em cada tabela.
 
-- Projeto Supabase criado e com status `ACTIVE_HEALTHY` na organização confirmada; custo de criação cotado em US$ 0/mês.
-- Migration Supabase `20261105124039_initial_emprest_ai_schema` aplicada.
-- Tabelas `public.users`, `public.equipment` e `public.loans` criadas com chaves/índices e enumerações.
-- RLS ativa nas três tabelas; uma política de leitura para cada tabela foi verificada.
-- Supabase Security Advisor sem avisos no momento da verificação.
-- Vercel Preview do frontend: `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY` configuradas para a branch `entrega-professor-emprest-ai-20261105`.
-- Vercel Preview do backend: `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY` configuradas para a mesma branch.
-- Frontend publicado com HTTP 200 e bundle contendo a URL Supabase e a URL da API de preview.
-- Backend compilado/READY, com `/health` retornando HTTP 503 / `database: not_configured`, pois falta conexão privada PostgreSQL.
+## Validação técnica
+- GitHub Actions: jobs de qualidade e gate estático SDD concluídos com sucesso no front e no back (com referências em `ENTREGA.md`).
+- O catálogo renderiza `photoUrl` retornado pela API autenticada e link para `photoSourceUrl`/`photoAuthor`.
+- As políticas de empréstimo (máximo 5, duração de 14 dias úteis, bloqueio por atraso/manutenção) são cobertas por testes automatizados; o fluxo completo com sessão docente e teste de simultaneidade por dois usuários não foi exercido remotamente nesta conferência.
+- Gate estático dos critérios de aceite **não é** uma revisão executada por subagente independente.
+- O Security Advisor do Supabase emitiu aviso de **Leaked Password Protection** desabilitada; verificar a possibilidade de habilitar em Auth → Settings. Referência: https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection .
 
-## Pendente — conexão privada do Prisma
-
-A criação automática de uma credencial SQL adicional foi barrada pela ferramenta de segurança. Consulta posterior confirmou que o papel `ticorporation_api` NÃO foi criado. **Não há `DATABASE_URL` ou `DIRECT_URL` configuradas pela automação.**
-
-Para concluir com segurança, o responsável pelo projeto deve:
-
-1. Abrir **Supabase Dashboard → Connect** para copiar as duas URLs da conexão PostgreSQL, preferencialmente **Transaction pooler** para `DATABASE_URL` (Vercel Functions, com parâmetro `pgbouncer=true&connection_limit=1`) e **Session pooler** para `DIRECT_URL`.
-2. Usar credencial restrita, específica para o backend, com permissões necessárias às três tabelas. Não colocar senha, string de conexão ou `service_role` no frontend, no GitHub ou neste relatório.
-3. Na Vercel, abrir **ticorporationback → Settings → Environment Variables** e cadastrar **`DATABASE_URL`** e **`DIRECT_URL`** como segredos no ambiente **Preview** com escopo da branch `entrega-professor-emprest-ai-20261105`. Nunca usar os segredos de produção nesse preview.
-4. Executar novo deployment da branch do backend, verificar `GET /health` com HTTP 200 e `database: connected`.
-5. Em **Supabase → Authentication → Users**, cadastrar uma conta de teste de maneira segura. Não há credenciais de demonstração públicas.
-6. Garantir que a pessoa exista em `public.users` com o mesmo e-mail da conta Supabase Auth. O perfil não é criado silenciosamente pela API; sem ele, solicitações de empréstimo recebem HTTP 403.
-7. Testar login, visualização de catálogo, empréstimo, limite de 3 itens, prazo de 14 dias e devolução no ambiente isolado; registrar as evidências de ponta a ponta antes de promover a produção.
-
-**Importante:** esta etapa mantém a antiga produção Data Quality intacta; o EMPREST.AI permanece na branch de entrega/Preview até a validação.
+## Escopo de publicação
+O EMPREST.AI opera em **Preview Vercel**; nenhuma operação substituiu a aplicação preexistente na produção. A documentação separa evidências executadas de testes que requerem sessão autenticada ou revisor independente.

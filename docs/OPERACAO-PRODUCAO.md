@@ -1,17 +1,27 @@
-# Roteiro de publicação humana — EMPREST.AI
+# Operação e conferência — EMPREST.AI
 
-**Agentes, CI e subagente NÃO executam este roteiro.** A prática exige operação pelo aluno/responsável.
+## Infraestrutura já provisionada (11/11/2026)
+- Projeto Supabase `ubqafowwlgodwhrxturg` e bucket público `equipment-images` ativos.
+- 12 JPEGs 800×600 vinculados aos 12 itens de `public.equipment`; veja `data/published-photos.json` para fotos, hashes, autores e caminhos.
+- Frontend Preview: https://ticorporationfront-git-entre-9cb9ca-rafaellaantunes27s-projects.vercel.app.
+- Backend Preview: https://ticorporationback-git-entreg-96222a-rafaellaantunes27s-projects.vercel.app/health — `status:ok`, `database:connected`.
+- Backend tem `DATABASE_URL` e `DIRECT_URL` definidos em segredo no ambiente Vercel Preview.
+- Perfil do professor cadastrado em `public.users`, papel `COLLABORATOR`, sem empréstimos; usuário `auth.users` criado.
 
-1. No Supabase, criar/confirmar bucket público `equipment-images` com gravação restrita a chave de serviço só no ambiente de operador. O navegador vê somente a URL pública de leitura.
-2. Fazer login na própria conta Pixabay e configurar `PIXABAY_API_KEY` no terminal local, **sem inserir a chave no chat ou em arquivos versionados**.
-3. Para cada patrimônio em `data/equipment.seed.json`, rodar **individualmente** `python3 frontend/skills/imagens-equipamentos/scripts/pixabay_search.py --asset TI-0001`, etc. Revisar candidatos no site e registrar IDs e metadados em `data/approved-photos.json`, assinando `visuallyApproved`, `reviewedBy` e `reviewedAt`.
-4. Para cada patrimônio aprovado, rodar `python3 frontend/skills/imagens-equipamentos/scripts/prepare_pixabay_image.py --asset TI-0001`, etc. Depois `python3 frontend/skills/imagens-equipamentos/scripts/validate_images.py`: somente o resultado com 12 JPEGs distintos em **800×600** autoriza prosseguir.
-5. No SQL Editor de **ambiente de teste isolado**, aplicar `supabase/002_pixabay_images.sql`; revisar a migration e seu efeito. Após validar em teste, o responsável pode aplicar a mesma migration no projeto de entrega.
-6. Para testar em outro projeto Supabase isolado, preencher `EXPECTED_SUPABASE_PROJECT_REF` com o ref de staging e confirmar a frase de staging. Configurar as variáveis de ambiente `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` e `PROFESSOR_INITIAL_PASSWORD` **na sessão local do responsável**. Não colar chaves no chat ou no Git. A senha de professor é digitada manualmente, nunca versionada.
-7. Inspecionar `python3 scripts/manual_publish.py` e executar sem flags: mostra apenas plano e não conecta em rede. Com **revisão e decisão expressa do operador**, executar `python3 scripts/manual_publish.py --apply`, digitar confirmação exigida. O programa usa patrimônio e nome fixos: rerun só atualiza metadados de foto, sem duplicar equipamentos nem resetar empréstimos.
-8. Confirmar 12 equipamentos, três em manutenção (TI-0004, TI-0007, TI-0010) e nove disponíveis conforme lista; verificar todos os 12 URLs públicos.
-9. Verificar que `marcelo.grilo@institutojef.org.br` autentica com a senha provida manualmente e tem **zero empréstimos**. Testar solicitação e limite de cinco itens com **outra conta de testes**.
-10. Para o backend no Vercel Preview, preencher credencial PostgreSQL `DATABASE_URL` e `DIRECT_URL` (somente secrets), `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY` (configuração pública). Não mover para produção até o teste funcional estar aprovado. Gerar Preview após alterar variáveis.
-11. Antes de entregar, o humano executa `git tag entrega-pratica` e `git push origin entrega-pratica` em cada repositório depois de aprovado o subagente. O agente não cria tag nem publica.
+## Operação segura de login
+A conta docente ainda não confirmou e-mail nem definiu senha na verificação de 11/11/2026. O responsável deve usar **Supabase → Authentication → Users** para revisar/reenviar o convite ou iniciar recuperação de senha, sem enviar senhas no chat, no GitHub ou para a aplicação. Com o convite aceito, testar o login manualmente no front e registrar o resultado.
 
-**Evidências:** registrar data, screenshots, comparação de IDs, resultado do teste de concorrência e tabelas de CA em `docs/evidencias/`. Não inventar logs ou aprovações.
+## Verificação das fotos
+1. Confirme em Supabase → Storage → `equipment-images` que `TI-0001.jpg` a `TI-0012.jpg` existem na raiz.
+2. Compare 12 registros em `public.equipment` com `data/published-photos.json`, especialmente `photo_url`, `photo_author`, `photo_source_url` e `photo_id`.
+3. Rode o workflow `Verificar imagens públicas Supabase` do GitHub Actions (frontend) para conferir GET HTTP, MIME JPEG, dimensões e hashes; nunca grave chave privada no workflow.
+4. Ao substituir uma foto, revise licença, autor, ID, 800×600, atualize objeto no bucket e os metadados do item. Marcas e telas das fotos atuais foram aceitas pelo responsável, com ressalva registrada.
+
+## Testes funcionais de negócio
+Após ativar a conta, use **outra conta de teste** para simular empréstimos e devoluções, preservando o perfil do docente sem empréstimos. Verifique cinco empréstimos, bloqueio do sexto, atraso, manutenção, prazo de 14 dias úteis e devolução por Operações; documente respostas e identidades usadas sem capturar credenciais.
+
+## Publicação e segurança
+A produção `main` permanece com outro aplicativo (Data Quality); este EMPREST.AI está nas branches de entrega e Vercel Preview. Não promova uma prévia para produção substituindo o produto anterior sem autorização expressa. Mantenha `DATABASE_URL`, `DIRECT_URL` e senhas somente no backend/ambiente privado. O Supabase Security Advisor indicou a proteção contra senhas vazadas desabilitada: revisar em Auth Settings quando disponível.
+
+## SDD
+A spec e as tarefas documentam a implementação. Execute `agents/verificador-spec.md` em um agente realmente independente para obter parecer, sem confundi-lo com a checagem estática `scripts/check-ca.mjs`.

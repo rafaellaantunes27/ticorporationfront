@@ -1,9 +1,10 @@
-# Tarefas 004
-- [x] Regra de 5 empréstimos e cálculo de 14 dias úteis com teste unitário.
-- [x] Bloqueios de atraso, manutenção, emprestado e limite.
-- [x] Atualização condicional e transação serializável existentes no backend, preservadas.
-- [x] Interface de solicitação, mensagens e Meus Empréstimos atualizados.
-- [x] Rotas de Operações autorizadas por perfil no backend.
-- [ ] Teste de simultaneidade real com duas transações em banco isolado.
-- [ ] Jornada real usando conta não docente e dados semeados pelo operador.
-- [ ] Parecer independente do `verificador-spec` e confirmação do humano.
+# Tarefas 004 — solicitação de empréstimo (evidências em 11/11/2026)
+- [x] Regra de até cinco empréstimos e data de devolução após 14 dias úteis (seg–sex UTC).
+- [x] Bloqueios por atraso, item emprestado e item em manutenção.
+- [x] API com transação SERIALIZABLE e reserva condicional para evitar dupla concessão.
+- [x] Interface de catálogo/Meus Empréstimos e mensagens de erro integradas à API real.
+- [x] Operações autorizado por papel consultado no backend; não só por ocultação visual.
+- [x] Backend Preview conectado ao banco: GET /health HTTP 200.
+- [ ] Jornada real completa com sessão autenticada e devolução.
+- [ ] Teste remoto simultâneo com duas transações autorizadas.
+- [ ] Revisão independente do verificador-spec em contexto separado.
