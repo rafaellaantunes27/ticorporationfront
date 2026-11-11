@@ -6,3 +6,10 @@
 4. Agente principal recebe achados, corrige; nova instância faz segunda rodada. Comparar tabelas e anexar evidência.
 5. O operador humano valida no ambiente de teste isolado, aprova a publicação e executa comandos com escrita; agente nunca altera Supabase de produção.
 6. Arquivos em `docs/evidencias/` documentam resultados reais, nunca substituem parecer ausente.
+
+## Isolamento efetivo ao executar no Codex
+O arquivo `.codex/agents/verificador-spec.toml` **não** instala sandbox próprio. A documentação atual do Codex informa que subagentes herdam a política de permissões e as conexões MCP da sessão principal. Portanto, pedir `read-only` em instruções **não é** controle de acesso suficiente.
+- Iniciar a rodada numa **sessão separada com permissões de somente leitura**, sem plugins/conectores de escrita ativos; não executar o verificador a partir de uma sessão full-access.
+- Se a configuração real não puder comprovar isolamento, registrar a lacuna e não marcar a spec PRONTA.
+- A configuração Claude mantém apenas `Read, Glob, Grep` permitidos e pode informar que não executou testes que exijam shell.
+- Comparar duas rodadas com contexto novo e anexar as tabelas sem permitir ao verificador alterar arquivos.

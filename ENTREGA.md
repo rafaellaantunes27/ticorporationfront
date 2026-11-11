@@ -69,6 +69,7 @@ Na revisão de imagens, o agente sugeriu **substituir três fotografias** por co
 - **Gatilho previsto:** depois que tarefas da spec terminaram, antes de declarar PRONTA. `docs/rules/verified-gate.md` exige a verificação; o workflow `criteria-readonly.yml` é **somente pré-gate estático**.
 - **Contexto limpo:** o agente deve ler `AGENTS.md`, regras, `spec.md`, `plan.md`, `tasks.md` e procurar testes com `CA` e evidência do frontend **e** backend.
 - **Proibição:** não editar, não corrigir teste, não dar push, não rodar migration, não acessar banco de produção. Configurado em `agents/verificador-spec.md`, `.claude/`, `.codex/` e `.cursor/`.
+- **Segurança efetiva do harness:** em Codex, subagentes **herdam permissões e MCPs da sessão principal**; a instrução textual não cria sandbox. O responsável deve iniciar a revisão a partir de sessão realmente read-only/sem conexões de escrita, ou reportar que o isolamento não foi comprovado. O adaptador Claude restringe ferramentas a `Read, Glob, Grep`. Registro em `docs/rules/verified-gate.md`.
 - **Aplicação em dois repositórios:** confirmar CAs em ambos os checkouts; `OUTRO REPOSITÓRIO` não é aprovação automática.
 - **Duas rodadas comparáveis:** o formato de relatório foi especificado, porém **ainda não existem duas execuções comprovadas de instâncias independentes**. Não substituir por revisão textual ou CI.
 
