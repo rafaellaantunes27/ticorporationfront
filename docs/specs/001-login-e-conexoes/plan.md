@@ -1,19 +1,9 @@
-# Plano: Login e conexões da aplicação
+# Plano 001 — Login e conexões
 
-## Decisões confirmadas
+1. Supabase Auth: login, sessão e atualização do token; recuperar senha e consumir links de convite sem expor tokens na URL após o uso.
+2. Backend: guard Supabase Auth, identificação por e-mail, consulta ao perfil do usuário, RBAC `OPERATIONS` e filtros por proprietário.
+3. Frontend: catálogo protegido, indicadores de erro, saída, tratamento de sessão expirada e mensagens de recuperação de conta.
+4. Configuração: URL/chave pública Supabase apenas no client; `DATABASE_URL` e `DIRECT_URL` protegidas na Vercel Preview, sem chaves privadas no frontend.
+5. Validação: CI de código e SDD, `/health` 200, conta Auth cadastrada; teste autenticado depende de ativação da conta convidada. Validar viewport com teclado virtual antes da homologação funcional.
 
-- Supabase é o provedor de autenticação e PostgreSQL/Supabase permanece como banco, conforme ADR 001.
-- Qualquer conta autenticada pode acessar a área de Operações.
-- Não haverá cadastro aberto; contas precisam existir previamente no Supabase Auth.
-
-## Áreas previstas
-
-1. Backend: validar access token com Supabase Auth, proteger endpoints e filtrar empréstimos pelo usuário autenticado; CORS e configuração segura.
-2. Frontend: cliente de autenticação, sessão, estados de carregamento/erro, chamadas autenticadas à API, saída e remoção da entrada de demonstração.
-3. Ambiente: `.env` local somente se necessário e disponível sem inventar credenciais; `.env.example` correspondente e configuração de deploy documentada para cada nova variável.
-4. Validação: testes por critério com identificadores `LOGIN-CA-*`, build frontend e checagem de tipos backend; nenhuma chamada a produção.
-5. Interface: confirmar ausência de rolagem sem cortar campos, mensagens ou botões nos viewports acordados.
-
-## Risco principal
-
-A API do backend deve validar tokens sem depender de uma chave de serviço ou implementar verificação JWT própria. Consultas Prisma usam a identidade autenticada e filtros explícitos; a RLS atual não substitui a autorização da API.
+Evidências online em `docs/STATUS-SUPABASE.md` e `docs/evidencias/CA-MATRIZ.md`.

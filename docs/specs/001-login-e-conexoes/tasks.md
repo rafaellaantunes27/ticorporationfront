@@ -1,11 +1,10 @@
-# Tarefas: Login e conexões da aplicação
-
-- [x] Confirmar Supabase como provedor e permitir acesso de qualquer usuário autenticado à área de Operações.
-- [x] Definir que contas devem ser previamente cadastradas no Supabase Auth.
-- [x] Implementar autenticação e ciclo de sessão Supabase (testado com provedor simulado; conta real ainda não validada).
-- [x] Proteger endpoints do backend e aplicar autorização por identidade; qualquer conta autenticada pode acessar Operações.
-- [x] Conectar chamadas do frontend ao backend autenticado e o backend às consultas Prisma (conexão remota não executada).
-- [x] Documentar variáveis nos `.env.example` e configurar o `.env` local sem expor segredos.
-- [x] Criar/atualizar testes identificados por critérios `LOGIN-CA-*`.
-- [x] Rodar validações permitidas e conferir critérios com evidência; LOGIN-CA-08 ficou sem teste visual.
-- [x] Acionar `agents/verificador-spec.md`; veredito NÃO PRONTA até haver evidência de viewport/teclado para LOGIN-CA-08.
+# Tarefas 001 — Login e conexões
+- [x] Supabase Auth conectado ao frontend; sem login de demonstração.
+- [x] Guard Bearer valida sessão no backend e localiza perfil pelo e-mail autenticado.
+- [x] Papel `OPERATIONS` verificado no servidor para rotas administrativas.
+- [x] Sessão, renovação, logout, convite e recuperação de senha tratados no frontend.
+- [x] `DATABASE_URL` e `DIRECT_URL` configuradas como Sensitive na Vercel Preview; `/health` confirma `database:connected`.
+- [x] Suites e gates estáticos de frontend/backend passam no GitHub Actions.
+- [ ] Validar ativação real do convite do docente e login/logout com e-mail confirmado.
+- [ ] Testar interação de login com teclado virtual em dispositivos físicos e registrar evidência.
+- [ ] Rodar revisão realmente independente do subagente `verificador-spec`.

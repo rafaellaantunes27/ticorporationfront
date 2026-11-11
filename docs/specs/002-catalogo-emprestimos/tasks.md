@@ -1,9 +1,10 @@
-# Tarefas
-- [x] Implementar política isolada de elegibilidade e prazo.
-- [x] Implementar endpoints de equipamentos, empréstimos e devolução.
-- [x] Ligar botões da interface à API, sem dados de demonstração.
-- [x] Incluir testes isolados de política e filtro.
-- [ ] Validar Jest, types/build após `npm install` com dependências acessíveis.
-- [ ] Testar transações e RLS no PostgreSQL/Supabase de teste isolado.
-- [ ] Testar LOGIN-CA-08 com viewport e teclado virtual.
-- [ ] Rodar subagente de verificação independente e registrar veredito consolidado.
+# Tarefas 002 — catálogo e empréstimos
+- [x] Política pura de cinco empréstimos e quatorze dias úteis.
+- [x] Rotas NestJS de catálogo, empréstimo, devolução e cadastro com autorização.
+- [x] React conectado à API sem dados mockados e com 12 fotos de catálogo.
+- [x] PostgreSQL/Supabase e Vercel Preview conectados (`/health` HTTP 200).
+- [x] Jest, TypeScript, builds e gates SDD aprovados no GitHub Actions.
+- [x] 12 imagens do Storage auditadas com verificação pública de SHA-256 e JPEG 800×600.
+- [ ] Login real e jornada de empréstimo/devolução, sem alterar os zero empréstimos da conta docente.
+- [ ] Teste de concorrência entre duas contas com sessões válidas.
+- [ ] Revisão isolada do subagente e conferência de layout com teclado virtual.
